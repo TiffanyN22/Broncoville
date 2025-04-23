@@ -11,7 +11,7 @@ public class Whiteboard : MonoBehaviour
     public bool whiteboardHover = false;
     [SerializeField] private int penSize;
     [SerializeField] private Colors pen_script;
-    private Renderer whiteboard;
+    private SpriteRenderer whiteboard;
     private bool pressingMouse;
 
     Vector3 mousePositionOffset;
@@ -21,10 +21,14 @@ public class Whiteboard : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        whiteboard = GetComponent<Renderer>();
+
+        whiteboard = GetComponent<SpriteRenderer>();
         textureSize = new Vector2(x: whiteboard.bounds.size.x, y: whiteboard.bounds.size.y);
         texture = new Texture2D(width: (int)textureSize.x, height: (int)textureSize.y);
-        whiteboard.material.mainTexture = texture;
+
+        var my_sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), Vector2.zero, 100, 0, SpriteMeshType.FullRect, Vector4.zero, false, null);
+        whiteboard.sprite = my_sprite;
+        //whiteboard.material.mainTexture = texture;
         penSize = 10;
     }
 
