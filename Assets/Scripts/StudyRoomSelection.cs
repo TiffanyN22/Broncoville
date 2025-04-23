@@ -8,8 +8,10 @@ public class StudyRoomSelection : MonoBehaviour
     [SerializeField] private GameObject joinRoomObject;
     [SerializeField] private GameObject createRoomObject;
     [SerializeField] private  List<OpenRoom> allRooms = new List<OpenRoom>();
-    [SerializeField] private  TMP_InputField joinPrivateRoomInput;
-    [SerializeField] private  TMP_InputField createRoomNameInput;
+    [SerializeField] private TMP_InputField joinPrivateRoomInput;
+    [SerializeField] private TMP_InputField createRoomNameInput;
+    [SerializeField] private GameObject publicRoomBtnPrefab;
+    [SerializeField] private Transform roomListContent;
     private bool createRoomPrivate;
 
     // Start is called before the first frame update
@@ -17,6 +19,20 @@ public class StudyRoomSelection : MonoBehaviour
     {
         // TODO: get allRooms from database
         // TODO: load buttons based on allRooms
+        foreach(OpenRoom curRoom in allRooms){
+            if(curRoom.isPublic){
+                AddRoomToScrollView(curRoom.roomName, curRoom.roomID);
+            }
+        }
+    }
+
+    public void AddRoomToScrollView(string roomName, int roomId)
+    {
+        GameObject newRoom = Instantiate(publicRoomBtnPrefab, roomListContent);
+        PublicRoomSelectButton roomInfo = newRoom.GetComponent<PublicRoomSelectButton>();
+        roomInfo.displayRoomName(roomName);
+        roomInfo.setRoomId(roomId);
+        newRoom.transform.localScale = Vector3.one; 
     }
 
     // Update is called once per frame
