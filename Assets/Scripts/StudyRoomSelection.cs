@@ -20,19 +20,20 @@ public class StudyRoomSelection : MonoBehaviour
         // TODO: get allRooms from database
         // TODO: load buttons based on allRooms
         foreach(OpenRoom curRoom in allRooms){
-            if(curRoom.isPublic){
-                AddRoomToScrollView(curRoom.roomName, curRoom.roomID);
-            }
+            AddRoomToScrollView(curRoom);
         }
     }
 
-    public void AddRoomToScrollView(string roomName, int roomId)
+    public void AddRoomToScrollView(OpenRoom newRoom)
     {
-        GameObject newRoom = Instantiate(publicRoomBtnPrefab, roomListContent);
-        PublicRoomSelectButton roomInfo = newRoom.GetComponent<PublicRoomSelectButton>();
-        roomInfo.displayRoomName(roomName);
-        roomInfo.setRoomId(roomId);
-        newRoom.transform.localScale = Vector3.one; 
+        if(newRoom.isPublic){
+            GameObject newRoomObject = Instantiate(publicRoomBtnPrefab, roomListContent);
+            PublicRoomSelectButton roomInfo = newRoomObject.GetComponent<PublicRoomSelectButton>();
+            roomInfo.displayRoomName(newRoom.roomName);
+            roomInfo.setRoomId(newRoom.roomID);
+            newRoomObject.transform.localScale = Vector3.one; 
+        }
+        
     }
 
     // Update is called once per frame
@@ -51,15 +52,12 @@ public class StudyRoomSelection : MonoBehaviour
         if (createRoomObject != null && !createRoomObject.activeSelf) createRoomObject.SetActive(true);
     }
 
-    public void joinRoom(int roomId){
-        // TODO: change room scene
-    }
-
     public void createRoom(){
         // note: assumes allRooms is stored in order of roomID
         // TODO: generate random id instead of just using next id
         OpenRoom newRoom = new OpenRoom(createRoomPrivate, createRoomNameInput.text, allRooms[allRooms.Count - 1].roomID + 1);
         allRooms.Add(newRoom);
+        AddRoomToScrollView(newRoom);
         // TODO: update displayed list and change user to that room
         // TODO: if private, let them know what study room ID is once they enter
     }
