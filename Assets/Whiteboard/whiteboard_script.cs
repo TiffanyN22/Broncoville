@@ -3,15 +3,17 @@ using System.Collections.Generic;
 using UnityEngine;
 using static UnityEditorInternal.ReorderableList;
 using Color = UnityEngine.Color;
+using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
-public class Whiteboard : MonoBehaviour
+public class Whiteboard : MonoBehaviour, IPointerDownHandler, IDragHandler, IPointerEnterHandler, IPointerExitHandler, IPointerUpHandler
 {
     public Texture2D texture;
     public Vector2 textureSize;
     public bool whiteboardHover = false;
     [SerializeField] private int penSize;
     [SerializeField] private Colors pen_script;
-    private SpriteRenderer whiteboard;
+    private Image whiteboard;
     private bool pressingMouse;
 
     Vector3 mousePositionOffset;
@@ -22,8 +24,8 @@ public class Whiteboard : MonoBehaviour
     void Start()
     {
 
-        whiteboard = GetComponent<SpriteRenderer>();
-        textureSize = new Vector2(x: whiteboard.bounds.size.x, y: whiteboard.bounds.size.y);
+        whiteboard = GetComponent<Image>();
+        textureSize = new Vector2(x: whiteboard.rectTransform.rect.width, y: whiteboard.rectTransform.rect.height);
         texture = new Texture2D(width: (int)textureSize.x, height: (int)textureSize.y);
 
         var my_sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), Vector2.zero, 100, 0, SpriteMeshType.FullRect, Vector4.zero, false, null);
@@ -36,8 +38,14 @@ public class Whiteboard : MonoBehaviour
     void Update()
     {
         // default values
-        whiteboardHover = false;
-        pressingMouse = false;
+
+        if (pressingMouse && whiteboardHover)
+        {
+            Draw();
+        }
+        else
+        {
+        }
     }
 
     // draw
@@ -46,30 +54,36 @@ public class Whiteboard : MonoBehaviour
         //capture mouse position & return world point
         return Camera.main.ScreenToWorldPoint(Input.mousePosition);
     }
-    private void OnMouseDown()
+    public void OnPointerDown(PointerEventData eventData)
     {
+        // Debug.Log("press");
     }
 
-    private void OnMouseDrag()
+    public void OnPointerUp(PointerEventData eventData)
     {
-        Debug.Log("pressing mouse");
+        pressingMouse = false;
+        Debug.Log("onpointerup");
+    }
+
+    public void OnDrag(PointerEventData eventData)
+    {
         pressingMouse = true;
     }
 
-    private void OnMouseOver()
+    public void OnPointerEnter(PointerEventData eventData)
     {
         whiteboardHover = true;
         // Debug.Log("hovering over whiteboard");
-        if (pressingMouse)
-        {
-            Draw();
-        }
+    }
+
+    public void OnPointerExit(PointerEventData eventData)
+    {
+        whiteboardHover = false;
     }
 
     private void Draw()
     {
         texture.SetPixels((int) GetMouseWorldPosition().x, (int) GetMouseWorldPosition().y, blockWidth: penSize, blockHeight: penSize, pen_script.myColorArray);
         texture.Apply();
-        Debug.Log("Drawing");
     }
 }

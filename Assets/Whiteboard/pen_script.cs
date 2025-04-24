@@ -51,7 +51,7 @@ public class Colors : MonoBehaviour
     }
     public void set_orange()
     {
-        myColor = new Color32(249, 105, 14, 1);
+        myColor = new Color(1f, 0.5f, 0f, 0f);
         set_pen();
     }
     public void set_yellow()
@@ -71,7 +71,7 @@ public class Colors : MonoBehaviour
     }
     public void set_purple()
     {
-        myColor = new Color32(90, 34, 139, 1);
+        myColor = new Color(1f, 0f, 1f, 0f);
         set_pen();
     }
     public void set_eraser()
