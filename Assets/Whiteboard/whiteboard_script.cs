@@ -16,14 +16,11 @@ public class Whiteboard : MonoBehaviour, IPointerDownHandler, IDragHandler, IPoi
     private Image whiteboard;
     private bool pressingMouse;
 
-    Vector3 mousePositionOffset;
-    public float defaultX;
-    public float defaultY;
+    public Vector3 mousePositionOffset;
 
     // Start is called before the first frame update
     void Start()
     {
-
         whiteboard = GetComponent<Image>();
         textureSize = new Vector2(x: whiteboard.rectTransform.rect.width, y: whiteboard.rectTransform.rect.height);
         texture = new Texture2D(width: (int)textureSize.x, height: (int)textureSize.y);
@@ -32,6 +29,7 @@ public class Whiteboard : MonoBehaviour, IPointerDownHandler, IDragHandler, IPoi
         whiteboard.sprite = my_sprite;
         //whiteboard.material.mainTexture = texture;
         penSize = 10;
+        ClearCanvas();
     }
 
     // Update is called once per frame
@@ -52,11 +50,14 @@ public class Whiteboard : MonoBehaviour, IPointerDownHandler, IDragHandler, IPoi
     public Vector3 GetMouseWorldPosition()
     {
         //capture mouse position & return world point
-        return Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        //return Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        return Input.mousePosition;
     }
     public void OnPointerDown(PointerEventData eventData)
     {
-        // Debug.Log("press");
+        // mousePositionOffset = gameObject.transform.position - GetMouseWorldPosition();
+        pressingMouse = true;
+        Debug.Log(eventData);
     }
 
     public void OnPointerUp(PointerEventData eventData)
@@ -83,7 +84,19 @@ public class Whiteboard : MonoBehaviour, IPointerDownHandler, IDragHandler, IPoi
 
     private void Draw()
     {
-        texture.SetPixels((int) GetMouseWorldPosition().x, (int) GetMouseWorldPosition().y, blockWidth: penSize, blockHeight: penSize, pen_script.myColorArray);
+        texture.SetPixels((int) (GetMouseWorldPosition().x + mousePositionOffset.x), (int) (GetMouseWorldPosition().y + mousePositionOffset.y), blockWidth: penSize, blockHeight: penSize, pen_script.myColorArray);
+        texture.Apply();
+    }
+
+    public void ClearCanvas()
+    {
+        for (int i = 0; i <= whiteboard.rectTransform.rect.width; i++)
+        {
+            for(int j = 0; j <= whiteboard.rectTransform.rect.height; j++)
+            {
+                texture.SetPixel(i, j, Color.white);
+            }
+        }
         texture.Apply();
     }
 }

@@ -6,9 +6,9 @@ using Color = UnityEngine.Color;
 
 public class Colors : MonoBehaviour
 {
-    [SerializeField] public Color32 myColor;
+    [SerializeField] public Color myColor;
     [SerializeField] private Whiteboard whiteboard_script;
-    [SerializeField] public Vector2 pen_dims = new Vector2(10,  10);
+    public Vector2 pen_dims = new Vector2(10,  10);
     public Color[] myColorArray;
 
     // Start is called before the first frame update
@@ -21,7 +21,9 @@ public class Colors : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        if (myColor != myColorArray[0]){
+            set_pen();
+        }
     }
 
     public void set_pen()
@@ -51,7 +53,7 @@ public class Colors : MonoBehaviour
     }
     public void set_orange()
     {
-        myColor = new Color(1f, 0.5f, 0f, 0f);
+        myColor = new Color(1, 0.64f, 0, 1);
         set_pen();
     }
     public void set_yellow()
@@ -71,7 +73,7 @@ public class Colors : MonoBehaviour
     }
     public void set_purple()
     {
-        myColor = new Color(1f, 0f, 1f, 0f);
+        myColor = Color.magenta;
         set_pen();
     }
     public void set_eraser()
