@@ -6,6 +6,7 @@ using UnityEngine;
 public class HelpBoard : MonoBehaviour
 {
   [SerializeField] private  List<HelpDetailsInfo> allHelpItems = new List<HelpDetailsInfo>();
+  // TODO: create interface to create help items
   [SerializeField] private GameObject helpItemPrefab;
   [SerializeField] private Transform helpListContent;
   [SerializeField] private GameObject helpDetails;
