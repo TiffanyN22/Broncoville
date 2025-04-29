@@ -13,8 +13,6 @@ public class HelpBoard : MonoBehaviour
 
   void Start()
     {
-        // TODO: get allRooms from database
-        // TODO: load buttons based on allRooms
         foreach(HelpDetailsInfo curItem in allHelpItems){
             AddItemToScrollview(curItem);
         }
@@ -28,12 +26,6 @@ public class HelpBoard : MonoBehaviour
         helpItem.SetTopic(newItem.topic);
         helpItem.SetHelpDetails(helpDetails);
         helpItem.SetHelpList(helpList);
-        helpItem.transform.localScale = Vector3.one; 
-
-        
-        // roomInfo.displayRoomName(newRoom.roomName);
-        // roomInfo.setRoomId(newRoom.roomID);
-        // newRoomObject.transform.localScale = Vector3.one; 
-        
+        helpItem.transform.localScale = Vector3.one;
     }
 }

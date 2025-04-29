@@ -55,10 +55,11 @@ public class StudyRoomSelection : MonoBehaviour
     public void createRoom(){
         // note: assumes allRooms is stored in order of roomID
         // TODO: generate random id instead of just using next id
+        // TODO: input validation
         OpenRoom newRoom = new OpenRoom(createRoomPrivate, createRoomNameInput.text, allRooms[allRooms.Count - 1].roomID + 1);
         allRooms.Add(newRoom);
         AddRoomToScrollView(newRoom);
-        // TODO: update displayed list and change user to that room
+        // TODO: change user to that room
         // TODO: if private, let them know what study room ID is once they enter
     }
 
