@@ -90,4 +90,16 @@ public class Colors : MonoBehaviour
     {
         whiteboard_script.penSize = 15;
     }
+
+    public void set_lineMode()
+    {
+        whiteboard_script.lineMode = true;
+        whiteboard_script.penMode = false;
+    }
+
+    public void set_penMode()
+    {
+        whiteboard_script.lineMode = false;
+        whiteboard_script.penMode = true;
+    }
 }

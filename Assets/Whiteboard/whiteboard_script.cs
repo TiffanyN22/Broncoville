@@ -8,14 +8,19 @@ using UnityEngine.EventSystems;
 
 public class Whiteboard : MonoBehaviour, IPointerDownHandler, IDragHandler, IPointerEnterHandler, IPointerExitHandler, IPointerUpHandler
 {
-    public Texture2D texture;
+    public Texture2D[] textures = new Texture2D[5];
     public Vector2 textureSize;
+    private int currentTextureIndex;
+    private Texture2D currentTexture;
+
     public bool whiteboardHover = false;
     [SerializeField] public int penSize = 10; // default penSize
     [SerializeField] private Colors pen_script;
     private Image whiteboard;
     public bool mouseLeftClick;
     public bool inWhiteboardBounds;
+    [SerializeField] public bool lineMode = false;
+    [SerializeField] public bool penMode = true;
 
     public Vector2 mousePositionOffset;
     public int nullValue = -123; // vectors can't be null, using this as replacement for null
@@ -24,14 +29,18 @@ public class Whiteboard : MonoBehaviour, IPointerDownHandler, IDragHandler, IPoi
     // Start is called before the first frame update
     void Start()
     {
+        currentTextureIndex = 0;
         lastTouch = new Vector2(nullValue, nullValue);
         whiteboard = GetComponent<Image>();
         textureSize = new Vector2(x: whiteboard.rectTransform.rect.width, y: whiteboard.rectTransform.rect.height);
-        texture = new Texture2D(width: (int)textureSize.x, height: (int)textureSize.y);
 
-        var my_sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), Vector2.zero, 100, 0, SpriteMeshType.FullRect, Vector4.zero, false, null);
-        whiteboard.sprite = my_sprite;
-        //whiteboard.material.mainTexture = texture;
+        for(int i = 0; i < textures.Length; i++)
+        {
+            textures[i] = new Texture2D(width: (int)textureSize.x, height: (int)textureSize.y);
+        }
+
+        var my_sprite = Sprite.Create(currentTexture, new Rect(0, 0, textureSize.x, textureSize.y), Vector2.zero, 100, 0, SpriteMeshType.FullRect, Vector4.zero, false, null);
+        whiteboard.sprite = my_sprite; // set texture
         penSize = 10;
         ClearCanvas();
     }
@@ -40,14 +49,13 @@ public class Whiteboard : MonoBehaviour, IPointerDownHandler, IDragHandler, IPoi
     void Update()
     {
         // default values
-        
+
         // if the pen is in whiteboard bounds
         inWhiteboardBounds = GetMouseWorldPosition().x - mousePositionOffset.x > 0 && GetMouseWorldPosition().x + mousePositionOffset.x < textureSize.x && GetMouseWorldPosition().y - mousePositionOffset.y > 0 && GetMouseWorldPosition().y + mousePositionOffset.y < textureSize.y;
-        // mouseLeftClick = Input.GetMouseButtonDown(0);
 
-        if (mouseLeftClick && inWhiteboardBounds)
+        if (mouseLeftClick && inWhiteboardBounds && penMode) // normal drawing mode
         {
-            Draw();
+            PlacePixelCluster();
         }
         else
         {
@@ -65,7 +73,11 @@ public class Whiteboard : MonoBehaviour, IPointerDownHandler, IDragHandler, IPoi
     {
         // mousePositionOffset = gameObject.transform.position - GetMouseWorldPosition();
         mouseLeftClick = true;
-        Debug.Log(eventData);
+        Debug.Log("onpointerdown");
+        if (lineMode)
+        {
+            
+        }
     }
 
     public void OnPointerUp(PointerEventData eventData)
@@ -91,7 +103,7 @@ public class Whiteboard : MonoBehaviour, IPointerDownHandler, IDragHandler, IPoi
         whiteboardHover = false;
     }
 
-    private void Draw()
+    private void PlacePixelCluster()
     {
         texture.SetPixels((int) (GetMouseWorldPosition().x - mousePositionOffset.x), (int) (GetMouseWorldPosition().y - mousePositionOffset.y), blockWidth: penSize, blockHeight: penSize, pen_script.myColorArray);
 

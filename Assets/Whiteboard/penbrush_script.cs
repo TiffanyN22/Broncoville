@@ -16,10 +16,8 @@ public class penbrush_script : MonoBehaviour, IPointerDownHandler, IDragHandler,
         whiteboard_script.penSize = 10; // penSize is 0 for some reason. set here as well
         penBrush = GetComponent<Image>();
         penBrushRT = GetComponent<RectTransform>();
-        Debug.Log(whiteboard_script.penSize);
         penBrushRT.sizeDelta = new Vector2(whiteboard_script.penSize, whiteboard_script.penSize);
         penBrushRT.anchoredPosition = new Vector2(0, 0);
-        Debug.Log(penBrushRT.anchoredPosition);
     }
 
     // Update is called once per frame
@@ -33,7 +31,6 @@ public class penbrush_script : MonoBehaviour, IPointerDownHandler, IDragHandler,
     {
         // mousePositionOffset = gameObject.transform.position - GetMouseWorldPosition();
         whiteboard_script.mouseLeftClick = true;
-        Debug.Log(eventData);
     }
 
     public void OnPointerUp(PointerEventData eventData)
