@@ -38,6 +38,7 @@ public class penbrush_script : MonoBehaviour, IPointerDownHandler, IDragHandler,
         whiteboard_script.mouseLeftClick = false;
         whiteboard_script.lastTouch = new Vector2(whiteboard_script.nullValue, whiteboard_script.nullValue); // indicates that there were no previous pixels placed in current brushstroke
         Debug.Log("onpointerup");
+        whiteboard_script.prepNewTexture();
     }
 
     public void OnDrag(PointerEventData eventData)
