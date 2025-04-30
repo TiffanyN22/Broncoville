@@ -8,26 +8,29 @@ public class Colors : MonoBehaviour
 {
     [SerializeField] public Color myColor;
     [SerializeField] private Whiteboard whiteboard_script;
-    public Vector2 pen_dims = new Vector2(10,  10);
+    public Vector2 pen_dims;
     public Color[] myColorArray;
 
     // Start is called before the first frame update
     void Start()
     {
         myColor = Color.black;
+        pen_dims = new Vector2(whiteboard_script.penSize, whiteboard_script.penSize);
         set_pen();
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (myColor != myColorArray[0]){
+        if (myColor != myColorArray[0] || whiteboard_script.penSize != pen_dims.x || whiteboard_script.penSize != pen_dims.y)
+        {
             set_pen();
         }
     }
 
     public void set_pen()
     {
+        pen_dims = new Vector2(whiteboard_script.penSize, whiteboard_script.penSize);
         myColorArray = new Color[(int)pen_dims.x * (int)pen_dims.y];
         for (int i = 0; i < myColorArray.Length; ++i)
         {

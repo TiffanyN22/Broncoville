@@ -6,12 +6,14 @@ using Color = UnityEngine.Color;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
+
+
 public class Whiteboard : MonoBehaviour, IPointerDownHandler, IDragHandler, IPointerEnterHandler, IPointerExitHandler, IPointerUpHandler
 {
     public Texture2D texture;
     public Vector2 textureSize;
     public bool whiteboardHover = false;
-    [SerializeField] private int penSize;
+    [SerializeField] public int penSize;
     [SerializeField] private Colors pen_script;
     private Image whiteboard;
     private bool pressingMouse;
