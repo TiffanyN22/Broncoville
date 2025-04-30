@@ -11,15 +11,15 @@ public class Whiteboard : MonoBehaviour, IPointerDownHandler, IDragHandler, IPoi
     public Texture2D texture;
     public Vector2 textureSize;
     public bool whiteboardHover = false;
-    [SerializeField] public int penSize;
+    [SerializeField] public int penSize = 10; // default penSize
     [SerializeField] private Colors pen_script;
     private Image whiteboard;
-    private bool pressingMouse;
+    public bool mouseLeftClick;
     public bool inWhiteboardBounds;
 
     public Vector2 mousePositionOffset;
-    private int nullValue = -123; // vectors can't be null, using this as replacement for null
-    private Vector2 lastTouch; // where the whiteboard was last drawn on
+    public int nullValue = -123; // vectors can't be null, using this as replacement for null
+    public Vector2 lastTouch; // where the whiteboard was last drawn on
 
     // Start is called before the first frame update
     void Start()
@@ -43,8 +43,9 @@ public class Whiteboard : MonoBehaviour, IPointerDownHandler, IDragHandler, IPoi
         
         // if the pen is in whiteboard bounds
         inWhiteboardBounds = GetMouseWorldPosition().x - mousePositionOffset.x > 0 && GetMouseWorldPosition().x + mousePositionOffset.x < textureSize.x && GetMouseWorldPosition().y - mousePositionOffset.y > 0 && GetMouseWorldPosition().y + mousePositionOffset.y < textureSize.y;
-       
-        if (pressingMouse && whiteboardHover && inWhiteboardBounds)
+        // mouseLeftClick = Input.GetMouseButtonDown(0);
+
+        if (mouseLeftClick && inWhiteboardBounds)
         {
             Draw();
         }
@@ -63,20 +64,20 @@ public class Whiteboard : MonoBehaviour, IPointerDownHandler, IDragHandler, IPoi
     public void OnPointerDown(PointerEventData eventData)
     {
         // mousePositionOffset = gameObject.transform.position - GetMouseWorldPosition();
-        pressingMouse = true;
+        mouseLeftClick = true;
         Debug.Log(eventData);
     }
 
     public void OnPointerUp(PointerEventData eventData)
     {
-        pressingMouse = false;
+        mouseLeftClick = false;
         lastTouch = new Vector2(nullValue, nullValue); // indicates that there were no previous pixels placed in current brushstroke
         Debug.Log("onpointerup");
     }
 
     public void OnDrag(PointerEventData eventData)
     {
-        pressingMouse = true;
+        mouseLeftClick = true;
     }
 
     public void OnPointerEnter(PointerEventData eventData)
