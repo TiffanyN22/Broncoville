@@ -15,6 +15,7 @@ public class Colors : MonoBehaviour
     void Start()
     {
         myColor = Color.black;
+        whiteboard_script.penSize = 10; // penSize is 0 for some reason
         pen_dims = new Vector2(whiteboard_script.penSize, whiteboard_script.penSize);
         set_pen();
     }
@@ -36,6 +37,7 @@ public class Colors : MonoBehaviour
         {
             myColorArray[i] = myColor;
         }
+        whiteboard_script.mousePositionOffset = new Vector2(whiteboard_script.penSize / 2, whiteboard_script.penSize / 2);
     }
 
     // there's definitely a better way to do this
