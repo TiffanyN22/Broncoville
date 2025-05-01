@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
-
 public class StudyRoomSelection : MonoBehaviour
 {
     [SerializeField] private GameObject joinRoomObject;
@@ -56,7 +55,11 @@ public class StudyRoomSelection : MonoBehaviour
         // note: assumes allRooms is stored in order of roomID
         // TODO: generate random id instead of just using next id
         // TODO: input validation
-        OpenRoom newRoom = new OpenRoom(createRoomPrivate, createRoomNameInput.text, allRooms[allRooms.Count - 1].roomID + 1);
+        if (createRoomNameInput.text == ""){
+            return;
+        }
+        int newRoomId = ((allRooms.Count - 1) >= 0) ? allRooms[allRooms.Count - 1].roomID + 1 : 0;
+        OpenRoom newRoom = new OpenRoom(createRoomPrivate, createRoomNameInput.text, newRoomId);
         allRooms.Add(newRoom);
         AddRoomToScrollView(newRoom);
         // TODO: change user to that room
@@ -66,6 +69,22 @@ public class StudyRoomSelection : MonoBehaviour
     public void setRoomCreationTypePublic(bool newType){
         createRoomPrivate = newType;
         // TODO: change color
+    }
+
+    public bool getCreateRoomPrivate(){
+        return createRoomPrivate;
+    }
+
+    public List<OpenRoom> getAllRooms(){
+        return allRooms;
+    }
+
+    public void clearAllRoom(){
+        allRooms = new List<OpenRoom>();
+    }
+
+    public void setCreateRoomNameInput(string text){
+        createRoomNameInput.text = text;
     }
 }
 
