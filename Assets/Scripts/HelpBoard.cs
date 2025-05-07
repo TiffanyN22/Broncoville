@@ -14,6 +14,17 @@ public class HelpBoard : MonoBehaviour
 
   void Start()
     {
+        refreshHelpDetails();
+    }
+
+    public void refreshHelpDetails(){
+        // delete previous items
+        foreach (Transform child in helpListContent)
+        {
+            Destroy(child.gameObject);
+        }
+
+        // add allHelpItems
         foreach(HelpDetailsInfo curItem in allHelpItems){
             AddItemToScrollview(curItem);
         }
@@ -28,5 +39,10 @@ public class HelpBoard : MonoBehaviour
         helpItem.SetHelpDetails(helpDetails);
         helpItem.SetHelpList(helpList);
         helpItem.transform.localScale = Vector3.one;
+    }
+
+    public List<HelpDetailsInfo> GetAllHelpItems()
+    {
+        return allHelpItems;
     }
 }
