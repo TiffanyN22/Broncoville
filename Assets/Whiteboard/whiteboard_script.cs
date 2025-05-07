@@ -45,7 +45,7 @@ public class Whiteboard : MonoBehaviour, IPointerDownHandler, IDragHandler, IPoi
 
         currentIndex = 0;
 
-        whiteboard.sprite = Sprite.Create(textures[currentIndex], new Rect(0, 0, textureSize.x, textureSize.y), Vector2.zero, 100, 0, SpriteMeshType.FullRect, Vector4.zero, false, null); // set texture
+        whiteboard.sprite = Sprite.Create(textures[currentIndex], new Rect(0, 0, (int)textureSize.x, (int)textureSize.y), Vector2.zero, 100, 0, SpriteMeshType.FullRect, Vector4.zero, false, null); // set texture
         penSize = 10;
     }
 
@@ -161,8 +161,14 @@ public class Whiteboard : MonoBehaviour, IPointerDownHandler, IDragHandler, IPoi
             textures[currentIndex + 1] = Instantiate(textures[currentIndex]); // copy texture
             textures[currentIndex + 1].name = "current texture " + (currentIndex + 1) + " (you're looking at this one!)";
 
+            if(currentIndex < textures.Length - 2)
+            {
+                textures[currentIndex + 2] = Instantiate(textures[currentIndex + 2]); // copy texture
+                textures[currentIndex + 2].name = "blank texture " + (currentIndex + 2);
+            }
+
             //textures[currentIndex + 1].LoadRawTextureData(textures[currentIndex].GetRawTextureData());
-            whiteboard.sprite = Sprite.Create(textures[currentIndex + 1], new Rect(0, 0, textureSize.x, textureSize.y), Vector2.zero, 100, 0, SpriteMeshType.FullRect, Vector4.zero, false, null);
+            whiteboard.sprite = Sprite.Create(textures[currentIndex + 1], new Rect(0, 0, (int)textureSize.x, (int)textureSize.y), Vector2.zero, 100, 0, SpriteMeshType.FullRect, Vector4.zero, false, null);
             
             currentIndex++;
 
@@ -176,7 +182,7 @@ public class Whiteboard : MonoBehaviour, IPointerDownHandler, IDragHandler, IPoi
                 textures[i - 1].name = "edited texture " + (i - 1); // so everything isn't marked with (Clone)
                 // Debug.Log("copied texture " + i + " into texture " + (i - 1));
             }
-            whiteboard.sprite = Sprite.Create(textures[currentIndex], new Rect(0, 0, textureSize.x, textureSize.y), Vector2.zero, 100, 0, SpriteMeshType.FullRect, Vector4.zero, false, null);
+            whiteboard.sprite = Sprite.Create(textures[currentIndex], new Rect(0, 0, (int)textureSize.x, (int)textureSize.y), Vector2.zero, 100, 0, SpriteMeshType.FullRect, Vector4.zero, false, null);
             // currentIndex--;
             Debug.Log("shifted all textures a step back. current texture: " + currentIndex);
         }
@@ -187,12 +193,7 @@ public class Whiteboard : MonoBehaviour, IPointerDownHandler, IDragHandler, IPoi
         // rename old texture
         textures[currentIndex] = Instantiate(textures[currentIndex]);
         textures[currentIndex].name = "edited texture " + (currentIndex);
-
-        if (currentIndex > 1 && (textures[currentIndex].imageContentsHash == textures[currentIndex - 1].imageContentsHash)) // check if past texture is unchanged
-        {
-            currentIndex -= 2;// extra undo for the extra texture created
-        }
-        else if(currentIndex >= 1)
+        if(currentIndex >= 1)
         {
             currentIndex--;
         }
@@ -201,7 +202,7 @@ public class Whiteboard : MonoBehaviour, IPointerDownHandler, IDragHandler, IPoi
         textures[currentIndex] = Instantiate(textures[currentIndex]); 
         textures[currentIndex].name = "current texture " + (currentIndex) + " (you're looking at this one!)";
 
-        whiteboard.sprite = Sprite.Create(textures[currentIndex], new Rect(0, 0, textureSize.x, textureSize.y), Vector2.zero, 100, 0, SpriteMeshType.FullRect, Vector4.zero, false, null);
+        whiteboard.sprite = Sprite.Create(textures[currentIndex], new Rect(0, 0, (int)textureSize.x, (int)textureSize.y), Vector2.zero, 100, 0, SpriteMeshType.FullRect, Vector4.zero, false, null);
             Debug.Log("undo. current texture: " + currentIndex);
     }
 
@@ -216,7 +217,7 @@ public class Whiteboard : MonoBehaviour, IPointerDownHandler, IDragHandler, IPoi
             textures[currentIndex + 1].name = "current texture " + (currentIndex + 1) + " (you're looking at this one!)";
 
             currentIndex++;
-            whiteboard.sprite = Sprite.Create(textures[currentIndex], new Rect(0, 0, textureSize.x, textureSize.y), Vector2.zero, 100, 0, SpriteMeshType.FullRect, Vector4.zero, false, null);
+            whiteboard.sprite = Sprite.Create(textures[currentIndex], new Rect(0, 0, (int)textureSize.x, (int)textureSize.y), Vector2.zero, 100, 0, SpriteMeshType.FullRect, Vector4.zero, false, null);
         }
         Debug.Log("undo. current texture: " + currentIndex);
     }

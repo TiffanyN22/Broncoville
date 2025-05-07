@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static UnityEngine.GraphicsBuffer;
+using UnityEngine.UIElements;
 
 public class linemaker_script : MonoBehaviour
 {
@@ -18,11 +20,12 @@ public class linemaker_script : MonoBehaviour
     void Update()
     {
         // calculate angle between cursor and object
-        /*
-        Vector2 Point_1 = new Vector2(whiteboard_script.GetMouseWorldPosition().x, whiteboard_script.GetMouseWorldPosition().y);
-        Vector2 Point_2 = new Vector2(0, 0);
-        float rotation = Mathf.Atan2(Point_2.y - Point_1.y, Point_2.x - Point_1.x) * 180 / Mathf.PI;
-        lineMakerRT.transform.Rotate(0, 0, rotation);
-        */
+
+        Vector2 object_pos = new Vector2(lineMakerRT.position.x, lineMakerRT.position.y);
+        float rel_x = (float)(whiteboard_script.GetMouseWorldPosition().x - object_pos.x);
+        float rel_y = (float)(whiteboard_script.GetMouseWorldPosition().y - object_pos.y);
+        float angle = Mathf.Atan2(rel_y, rel_x) * Mathf.Rad2Deg;
+        transform.rotation = Quaternion.Euler(new Vector3(0, 0, angle));
+        
     }
 }

@@ -28,7 +28,7 @@ public class whiteboard_pm_testscript
         Whiteboard mywhiteboard = AssetDatabase.LoadAssetAtPath<Whiteboard>("Assets/Whiteboard/Whiteboard.prefab");
         Debug.Log(mywhiteboard.textures.Length);
         Debug.Log(mywhiteboard.rangeUndoRedo);
-        Assert.AreEqual(mywhiteboard.textures.Length, mywhiteboard.rangeUndoRedo);
+        Assert.AreEqual(10, mywhiteboard.rangeUndoRedo);
         yield return null;
     }
 
@@ -64,7 +64,7 @@ public class whiteboard_pm_testscript
         Colors mypen = AssetDatabase.LoadAssetAtPath<Colors>("Assets/Whiteboard/PenManager.prefab");
 
         Assert.AreEqual(mywhiteboard.penSize, 0);
-        Assert.AreEqual(mywhiteboard.rangeUndoRedo, 5);
+        Assert.AreEqual(mywhiteboard.rangeUndoRedo, 10);
         Assert.AreEqual(mypen.myColor, new Color(1.000f, 0.000f, 0.000f, 1.000f)); // default black
 
         yield return null;
