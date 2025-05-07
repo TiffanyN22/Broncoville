@@ -19,7 +19,7 @@ public class JoinStudyRoomTestScript
         var selection = GameObject.FindObjectOfType<StudyRoomSelection>();
         Assert.IsNotNull(selection, "StudyRoomSelection not found in scene.");
 
-        // test createRoom doesn't change the list
+        // test createRoom doesn't't add element becuase it has no input field
         List<OpenRoom> originalRooms = new List<OpenRoom>(selection.getAllRooms());
         selection.createRoom();
         Assert.AreEqual(originalRooms, selection.getAllRooms(), "Room list changed unexpectedly.");
@@ -40,7 +40,7 @@ public class JoinStudyRoomTestScript
         string newRoomName = "TestRoom";
         selection.setCreateRoomNameInput(newRoomName);
 
-        // test new element as added createRoom doesn't change the list
+        // test new element is added
         List<OpenRoom> originalRooms = new List<OpenRoom>(selection.getAllRooms());
         selection.createRoom();
         Assert.AreNotEqual(originalRooms, selection.getAllRooms(), "Room list didn't changed.");
@@ -60,7 +60,7 @@ public class JoinStudyRoomTestScript
         var selection = GameObject.FindObjectOfType<StudyRoomSelection>();
         Assert.IsNotNull(selection, "StudyRoomSelection not found in scene.");
 
-        // delete existing rooms
+        // delete existing rooms, check it actually deleted
         selection.clearAllRoom();
         Assert.AreEqual(0, selection.getAllRooms().Count, "Did not clear study rooms correctly");
 
@@ -68,7 +68,7 @@ public class JoinStudyRoomTestScript
         string newRoomName = "TestRoom";
         selection.setCreateRoomNameInput(newRoomName);
 
-        // test new element as added createRoom doesn't change the list
+        // test new element is added, check new element has id 0 because first element in list
         List<OpenRoom> originalRooms = new List<OpenRoom>(selection.getAllRooms());
         selection.createRoom();
         Assert.AreNotEqual(originalRooms, selection.getAllRooms(), "Room list didn't changed.");
