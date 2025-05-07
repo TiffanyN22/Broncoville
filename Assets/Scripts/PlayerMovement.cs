@@ -4,7 +4,8 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
-    [SerializeField] private float speed;
+    [SerializeField] private float normalSpeed = 2;
+    [SerializeField] private float sprintSpeed = 3;
     private Animator animator;
     private Transform transform;
     private Vector3 direction;
@@ -29,7 +30,12 @@ public class PlayerMovement : MonoBehaviour
     {
         //move the player
         direction.Normalize();
-        transform.position += direction * speed * Time.deltaTime;
+        if (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift)){
+            transform.position += direction * sprintSpeed * Time.deltaTime;
+        } else {
+            transform.position += direction * normalSpeed * Time.deltaTime;
+        }
+        
     }
 
     void AnimateMovement(Vector3 direction)

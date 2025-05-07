@@ -68,7 +68,7 @@ public class ManageHelpItems : MonoBehaviour
         helpBoard.refreshHelpDetails();
     }
 
-    private void showMyHelpItems() {
+    public void showMyHelpItems() {
         // delete previous items
         foreach (Transform child in myHelpListContent)
         {
@@ -85,11 +85,10 @@ public class ManageHelpItems : MonoBehaviour
     public void AddMyItemToScrollview(HelpDetailsInfo newItem)
     {
         GameObject helpItemObject = Instantiate(myHelpItemsPrefab, myHelpListContent);
-        HelpBoardItem helpItem = helpItemObject.GetComponent<HelpBoardItem>();
-        helpItem.helpDetailsInfo = newItem;
-        helpItem.SetTopic(newItem.topic);
-        // helpItem.SetHelpDetails(helpDetails);
-        // helpItem.SetHelpList(helpList);
+        MyHelpBoardItem helpItem = helpItemObject.GetComponent<MyHelpBoardItem>();
+        helpItem.SetInfo(newItem.topic, username);
+        helpItem.SetAllHelpItems(helpBoard.GetAllHelpItems());
+        helpItem.SetManageHelpItems(this);
         helpItem.transform.localScale = Vector3.one;
     }
 }

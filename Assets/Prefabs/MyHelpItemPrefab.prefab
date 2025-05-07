@@ -400,7 +400,7 @@ GameObject:
   - component: {fileID: 6431821885043173395}
   - component: {fileID: 8550406459441056256}
   - component: {fileID: 4496732527729850823}
-  - component: {fileID: 8823818223844891176}
+  - component: {fileID: 1426542731161999744}
   m_Layer: 5
   m_Name: MyHelpItemPrefab
   m_TagString: Untagged
@@ -467,7 +467,7 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &8823818223844891176
+--- !u!114 &1426542731161999744
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -476,14 +476,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 8348312032030403104}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 53323a7787ffd4b75912f14b4f182e4c, type: 3}
+  m_Script: {fileID: 11500000, guid: 4cf110a40ba5d457889f7d2e398e4c14, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   itemTopic: {fileID: 2976317011929144990}
-  learnMoreButton: {fileID: 5286520226680971714}
-  helpDetails: {fileID: 0}
-  helpList: {fileID: 0}
-  helpDetailsInfo:
-    topic: 
-    requester: 
-    description: 
+  deleteButton: {fileID: 5286520226680971714}
+  helpRequester: 

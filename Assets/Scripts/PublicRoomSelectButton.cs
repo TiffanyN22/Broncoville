@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class PublicRoomSelectButton : MonoBehaviour
 {
@@ -18,7 +19,8 @@ public class PublicRoomSelectButton : MonoBehaviour
     }
 
     public void clickedButton(){
-      // TODO: change scene
+      // TODO: change to correct roomID
+      SceneManager.LoadScene("StudyRoomScene");
       Debug.Log($"Going to {roomId}");
     }
 }
