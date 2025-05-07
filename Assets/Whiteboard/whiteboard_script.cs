@@ -5,10 +5,11 @@ using static UnityEditorInternal.ReorderableList;
 using Color = UnityEngine.Color;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using System;
 
 public class Whiteboard : MonoBehaviour, IPointerDownHandler, IDragHandler, IPointerEnterHandler, IPointerExitHandler, IPointerUpHandler
 {
-    public int rangeUndoRedo = 5;
+    [NonSerialized] public int rangeUndoRedo = 10;
     public Texture2D[] textures;
     public Sprite sprite;
     public Vector2 textureSize;
@@ -38,8 +39,7 @@ public class Whiteboard : MonoBehaviour, IPointerDownHandler, IDragHandler, IPoi
         for (currentIndex = 0; currentIndex < textures.Length; currentIndex++)
         {
             textures[currentIndex] = new Texture2D(width: (int)textureSize.x, height: (int)textureSize.y);
-            Debug.Log(currentIndex + "th texture made");
-
+            textures[currentIndex].name = "blank texture " + (currentIndex);
             CleanCanvas();
         }
 
@@ -75,31 +75,22 @@ public class Whiteboard : MonoBehaviour, IPointerDownHandler, IDragHandler, IPoi
     }
     public void OnPointerDown(PointerEventData eventData)
     {
-        mouseLeftClick = true;
-        Debug.Log("onpointerdown");
-        if (lineMode)
-        {
-            
-        }
+        onWhiteboardClickDown();
     }
 
     public void OnPointerUp(PointerEventData eventData)
     {
-        mouseLeftClick = false;
-        lastTouch = new Vector2(nullValue, nullValue); // indicates that there were no previous pixels placed in current brushstroke
-        prepNewTexture();
-        Debug.Log("onpointerup");
+        onWhiteboardClickUp();
     }
 
     public void OnDrag(PointerEventData eventData)
     {
-        mouseLeftClick = true;
+        onWhiteboardDrag();
     }
 
     public void OnPointerEnter(PointerEventData eventData)
     {
         whiteboardHover = true;
-        // Debug.Log("hovering over whiteboard");
     }
 
     public void OnPointerExit(PointerEventData eventData)
@@ -164,9 +155,11 @@ public class Whiteboard : MonoBehaviour, IPointerDownHandler, IDragHandler, IPoi
         Debug.Log("prepping new texture...");
         if (currentIndex < textures.Length - 1) // there is an empty slot in front of currentTexture, move forward to the empty spot
         {
-            textures[currentIndex].name = "texture " + (currentIndex);
-            textures[currentIndex + 1] = Instantiate(textures[currentIndex]);
-            textures[currentIndex + 1].name = "current texture " + (currentIndex + 1);
+            textures[currentIndex] = Instantiate(textures[currentIndex]); // apparently you have to instantiate stuff to rename it (boo)
+            textures[currentIndex].name = "edited texture " + (currentIndex); 
+
+            textures[currentIndex + 1] = Instantiate(textures[currentIndex]); // copy texture
+            textures[currentIndex + 1].name = "current texture " + (currentIndex + 1) + " (you're looking at this one!)";
 
             //textures[currentIndex + 1].LoadRawTextureData(textures[currentIndex].GetRawTextureData());
             whiteboard.sprite = Sprite.Create(textures[currentIndex + 1], new Rect(0, 0, textureSize.x, textureSize.y), Vector2.zero, 100, 0, SpriteMeshType.FullRect, Vector4.zero, false, null);
@@ -180,11 +173,10 @@ public class Whiteboard : MonoBehaviour, IPointerDownHandler, IDragHandler, IPoi
             for(int i = 1; i  < textures.Length; i++)
             {
                 textures[i - 1] = Instantiate(textures[i]);
-                textures[i - 1].name = "texture " + (i - 1);
-                Debug.Log("copied texture " + i + " into texture " + (i - 1));
+                textures[i - 1].name = "edited texture " + (i - 1); // so everything isn't marked with (Clone)
+                // Debug.Log("copied texture " + i + " into texture " + (i - 1));
             }
             whiteboard.sprite = Sprite.Create(textures[currentIndex], new Rect(0, 0, textureSize.x, textureSize.y), Vector2.zero, 100, 0, SpriteMeshType.FullRect, Vector4.zero, false, null);
-            textures[currentIndex].name = "current texture " + currentIndex;
             // currentIndex--;
             Debug.Log("shifted all textures a step back. current texture: " + currentIndex);
         }
@@ -192,6 +184,10 @@ public class Whiteboard : MonoBehaviour, IPointerDownHandler, IDragHandler, IPoi
 
     public void undoTexture()
     {
+        // rename old texture
+        textures[currentIndex] = Instantiate(textures[currentIndex]);
+        textures[currentIndex].name = "edited texture " + (currentIndex);
+
         if (currentIndex > 1 && (textures[currentIndex].imageContentsHash == textures[currentIndex - 1].imageContentsHash)) // check if past texture is unchanged
         {
             currentIndex -= 2;// extra undo for the extra texture created
@@ -200,14 +196,25 @@ public class Whiteboard : MonoBehaviour, IPointerDownHandler, IDragHandler, IPoi
         {
             currentIndex--;
         }
+
+        // rename new texture
+        textures[currentIndex] = Instantiate(textures[currentIndex]); 
+        textures[currentIndex].name = "current texture " + (currentIndex) + " (you're looking at this one!)";
+
         whiteboard.sprite = Sprite.Create(textures[currentIndex], new Rect(0, 0, textureSize.x, textureSize.y), Vector2.zero, 100, 0, SpriteMeshType.FullRect, Vector4.zero, false, null);
             Debug.Log("undo. current texture: " + currentIndex);
     }
 
     public void redoTexture()
     {
-        if (currentIndex < textures.Length - 1)
-        {
+        if (currentIndex < textures.Length - 1 && (!(textures[currentIndex + 1].name).Contains("blank")))
+        {   
+            // rename textures
+            textures[currentIndex] = Instantiate(textures[currentIndex]); // apparently you have to instantiate stuff to rename it (boo)
+            textures[currentIndex].name = "edited texture " + (currentIndex);
+            textures[currentIndex + 1] = Instantiate(textures[currentIndex + 1]); // copy texture
+            textures[currentIndex + 1].name = "current texture " + (currentIndex + 1) + " (you're looking at this one!)";
+
             currentIndex++;
             whiteboard.sprite = Sprite.Create(textures[currentIndex], new Rect(0, 0, textureSize.x, textureSize.y), Vector2.zero, 100, 0, SpriteMeshType.FullRect, Vector4.zero, false, null);
         }
@@ -218,4 +225,28 @@ public class Whiteboard : MonoBehaviour, IPointerDownHandler, IDragHandler, IPoi
     {
         return currentIndex; 
     }
+
+    public void onWhiteboardClickDown()
+    {
+        prepNewTexture();
+        mouseLeftClick = true;
+        Debug.Log("onpointerdown");
+        if (lineMode)
+        {
+            
+        }
+    }
+
+    public void onWhiteboardClickUp()
+    {
+        mouseLeftClick = false;
+        lastTouch = new Vector2(nullValue, nullValue); // indicates that there were no previous pixels placed in current brushstroke
+        Debug.Log("onpointerup");
+    }
+
+    public void onWhiteboardDrag()
+    {
+        mouseLeftClick = true;
+    }
+
 }

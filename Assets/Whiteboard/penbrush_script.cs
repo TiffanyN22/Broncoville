@@ -34,20 +34,16 @@ public class penbrush_script : MonoBehaviour, IPointerDownHandler, IDragHandler,
     // added extra drawing events in case mouse clicks on brush and not whiteboard (it's either this or raycasting so i choose this)
     public void OnPointerDown(PointerEventData eventData)
     {
-        // mousePositionOffset = gameObject.transform.position - GetMouseWorldPosition();
-        whiteboard_script.mouseLeftClick = true;
+        whiteboard_script.onWhiteboardClickDown();
     }
 
     public void OnPointerUp(PointerEventData eventData)
     {
-        whiteboard_script.mouseLeftClick = false;
-        whiteboard_script.lastTouch = new Vector2(whiteboard_script.nullValue, whiteboard_script.nullValue); // indicates that there were no previous pixels placed in current brushstroke
-        Debug.Log("onpointerup");
-        whiteboard_script.prepNewTexture();
+        whiteboard_script.onWhiteboardClickUp();
     }
 
     public void OnDrag(PointerEventData eventData)
     {
-        whiteboard_script.mouseLeftClick = true;
+        whiteboard_script.onWhiteboardDrag();
     }
 }
