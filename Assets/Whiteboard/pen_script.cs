@@ -8,6 +8,7 @@ public class Colors : MonoBehaviour
 {
     [SerializeField] public Color myColor;
     [SerializeField] private Whiteboard whiteboard_script;
+    [SerializeField] private penbrush_script mypenbrush_script;
     public Vector2 pen_dims;
     public Color[] myColorArray;
 
@@ -81,14 +82,17 @@ public class Colors : MonoBehaviour
     public void set_small()
     {
         whiteboard_script.penSize = 5;
+        mypenbrush_script.penBrushSizeAdjust();
     }
     public void set_med()
     {
         whiteboard_script.penSize = 10;
+        mypenbrush_script.penBrushSizeAdjust();
     }
     public void set_lg()
     {
         whiteboard_script.penSize = 15;
+        mypenbrush_script.penBrushSizeAdjust();
     }
 
     public void set_lineMode()

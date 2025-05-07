@@ -20,6 +20,11 @@ public class penbrush_script : MonoBehaviour, IPointerDownHandler, IDragHandler,
         penBrushRT.anchoredPosition = new Vector2(0, 0);
     }
 
+    public void penBrushSizeAdjust()
+    {
+        penBrushRT.sizeDelta = new Vector2(whiteboard_script.penSize, whiteboard_script.penSize);
+    }
+
     // Update is called once per frame
     void Update()
     {

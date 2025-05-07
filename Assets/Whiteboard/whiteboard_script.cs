@@ -8,7 +8,7 @@ using UnityEngine.EventSystems;
 
 public class Whiteboard : MonoBehaviour, IPointerDownHandler, IDragHandler, IPointerEnterHandler, IPointerExitHandler, IPointerUpHandler
 {
-    int rangeUndoRedo = 5;
+    public int rangeUndoRedo = 5;
     public Texture2D[] textures;
     public Sprite sprite;
     public Vector2 textureSize;
@@ -28,7 +28,7 @@ public class Whiteboard : MonoBehaviour, IPointerDownHandler, IDragHandler, IPoi
     public Vector2 lastTouch; // where the whiteboard was last drawn on
 
     // Start is called before the first frame update
-    void Start()
+    public void Start()
     {
         textures = new Texture2D[rangeUndoRedo];
         lastTouch = new Vector2(nullValue, nullValue);
@@ -52,6 +52,8 @@ public class Whiteboard : MonoBehaviour, IPointerDownHandler, IDragHandler, IPoi
     // Update is called once per frame
     void Update()
     {
+        var my_draw_x = (int)(GetMouseWorldPosition().x - mousePositionOffset.x);
+        var my_draw_y = (int)(GetMouseWorldPosition().y - mousePositionOffset.y);
         // default values
 
         // if the pen is in whiteboard bounds
@@ -59,7 +61,7 @@ public class Whiteboard : MonoBehaviour, IPointerDownHandler, IDragHandler, IPoi
 
         if (mouseLeftClick && inWhiteboardBounds && penMode) // normal drawing mode
         {
-            PlacePixelCluster();
+            PlacePixelCluster(my_draw_x, my_draw_y);
         }
         else
         {
@@ -69,13 +71,10 @@ public class Whiteboard : MonoBehaviour, IPointerDownHandler, IDragHandler, IPoi
     // draw
     public Vector3 GetMouseWorldPosition()
     {
-        //capture mouse position & return world point
-        //return Camera.main.ScreenToWorldPoint(Input.mousePosition);
         return Input.mousePosition;
     }
     public void OnPointerDown(PointerEventData eventData)
     {
-        // mousePositionOffset = gameObject.transform.position - GetMouseWorldPosition();
         mouseLeftClick = true;
         Debug.Log("onpointerdown");
         if (lineMode)
@@ -108,23 +107,23 @@ public class Whiteboard : MonoBehaviour, IPointerDownHandler, IDragHandler, IPoi
         whiteboardHover = false;
     }
 
-    private void PlacePixelCluster()
+    public void PlacePixelCluster(int draw_x, int draw_y)
     {
-        textures[currentIndex].SetPixels((int) (GetMouseWorldPosition().x - mousePositionOffset.x), (int) (GetMouseWorldPosition().y - mousePositionOffset.y), blockWidth: penSize, blockHeight: penSize, pen_script.myColorArray);
+        textures[currentIndex].SetPixels(draw_x, draw_y, blockWidth: penSize, blockHeight: penSize, pen_script.myColorArray);
 
         // interpolate
         if (lastTouch.x != nullValue && lastTouch.y != nullValue)
         {
             for(float f = 0.01f; f < 1.00f; f+= 0.03f) // last value determines how many points in between now and lastTouch (brush smoothness)
             {
-                var lerpX = (int)Mathf.Lerp(a: lastTouch.x, b: (int)(GetMouseWorldPosition().x - mousePositionOffset.x), t: f);
-                var lerpY = (int)Mathf.Lerp(a: lastTouch.y, b: (int)(GetMouseWorldPosition().y - mousePositionOffset.y), t: f);
+                var lerpX = (int)Mathf.Lerp(a: lastTouch.x, b: draw_x, t: f);
+                var lerpY = (int)Mathf.Lerp(a: lastTouch.y, b: draw_y, t: f);
                 textures[currentIndex].SetPixels(lerpX, lerpY, blockWidth: penSize, blockHeight: penSize, pen_script.myColorArray);
             }
         }
         textures[currentIndex].Apply();
 
-        lastTouch = new Vector2(GetMouseWorldPosition().x - mousePositionOffset.x, (int)GetMouseWorldPosition().y - mousePositionOffset.y);
+        lastTouch = new Vector2(draw_x, draw_y);
     }
 
     public void ClearCanvas() // classified as a move
@@ -213,5 +212,10 @@ public class Whiteboard : MonoBehaviour, IPointerDownHandler, IDragHandler, IPoi
             whiteboard.sprite = Sprite.Create(textures[currentIndex], new Rect(0, 0, textureSize.x, textureSize.y), Vector2.zero, 100, 0, SpriteMeshType.FullRect, Vector4.zero, false, null);
         }
         Debug.Log("undo. current texture: " + currentIndex);
+    }
+
+    public int getCurrentIndex()
+    {
+        return currentIndex; 
     }
 }
