@@ -86,6 +86,10 @@ public class StudyRoomSelection : MonoBehaviour
     public void setCreateRoomNameInput(string text){
         createRoomNameInput.text = text;
     }
+
+    public void closeStudyRoomSelection(){
+        gameObject.SetActive(false);
+    }
 }
 
 [System.Serializable] 

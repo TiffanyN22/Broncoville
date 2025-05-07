@@ -6,6 +6,7 @@ using TMPro;
 
 public class ManageHelpItems : MonoBehaviour
 {
+    [SerializeField] GameObject helpBoardGroup;
     [SerializeField] GameObject addHelpItemGroup;
     [SerializeField] GameObject myHelpItemsGroup;
     [SerializeField] GameObject helpListGroup;
@@ -28,6 +29,10 @@ public class ManageHelpItems : MonoBehaviour
     void Update()
     {
         
+    }
+
+    public void CloseHelpBoard(){
+        if(helpBoardGroup != null) helpBoardGroup.SetActive(false);
     }
 
     public void ClickedAddItemPanel(){
