@@ -54,8 +54,13 @@ public class linemaker_script : MonoBehaviour
         lineMakerIM.gameObject.SetActive(true);
     }
 
-    public void setLineMakerColor(Color myColor)
+    public void setLineMakerColor(Color newColor)
     {
-        lineMakerIM.color = myColor;
+        lineMakerIM.color = newColor;
+    }
+
+    public bool lineMakerExists()
+    {
+        return lineMakerIM != null && lineMakerIM != null;
     }
 }
