@@ -256,6 +256,18 @@ public class Whiteboard : MonoBehaviour, IPointerDownHandler, IDragHandler, IPoi
             lineEnd = GetMouseWorldPosition();
             mylinemaker_script.rotateLine();
             mylinemaker_script.hideLine();
+
+            int pixel_freq = 5; // in a given distance, how far apart should the pixels be
+            float density = (float)(1/(Mathf.Sqrt(Mathf.Pow(lineEnd.x - lineStart.x, 2) + Mathf.Pow(lineEnd.y - lineStart.y, 2)) / pixel_freq)); // line density
+
+            for (float f = 0.01f; f < 1.00f; f += density) // last value determines how many points in between now and lastTouch (brush smoothness)
+            {
+                var lerpX = (int)Mathf.Lerp(a: lineStart.x, b: lineEnd.x, t: f);
+                var lerpY = (int)Mathf.Lerp(a: lineStart.y, b: lineEnd.y, t: f);
+                textures[currentIndex].SetPixels(lerpX - (penSize / 2), lerpY - (penSize / 2), blockWidth: penSize, blockHeight: penSize, pen_script.myColorArray);
+                Debug.Log("x: " + lerpX + " y: " + lerpY);
+            }
+            textures[currentIndex].Apply();
         }
     }
 

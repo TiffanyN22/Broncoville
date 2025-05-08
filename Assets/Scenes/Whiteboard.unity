@@ -4912,6 +4912,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   whiteboard_script: {fileID: 1587068237}
+  pen_script: {fileID: 980504433}
 --- !u!1 &1942257134
 GameObject:
   m_ObjectHideFlags: 0

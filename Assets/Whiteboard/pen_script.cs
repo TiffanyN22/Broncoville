@@ -40,6 +40,7 @@ public class Colors : MonoBehaviour
             myColorArray[i] = myColor;
         }
         whiteboard_script.mousePositionOffset = new Vector2(whiteboard_script.penSize / 2, whiteboard_script.penSize / 2);
+        mylinemaker_script.setLineMakerColor(myColor);
     }
 
     // there's definitely a better way to do this

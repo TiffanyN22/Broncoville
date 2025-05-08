@@ -4,6 +4,7 @@ using UnityEngine;
 using static UnityEngine.GraphicsBuffer;
 using UnityEngine.UI;
 using UnityEngine.UIElements;
+using Color = UnityEngine.Color;
 
 public class linemaker_script : MonoBehaviour
 {
@@ -51,5 +52,10 @@ public class linemaker_script : MonoBehaviour
     public void showLine()
     {
         lineMakerIM.gameObject.SetActive(true);
+    }
+
+    public void setLineMakerColor(Color myColor)
+    {
+        lineMakerIM.color = myColor;
     }
 }
