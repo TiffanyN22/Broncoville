@@ -9,6 +9,7 @@ public class Colors : MonoBehaviour
     [SerializeField] public Color myColor;
     [SerializeField] private Whiteboard whiteboard_script;
     [SerializeField] private penbrush_script mypenbrush_script;
+    [SerializeField] private linemaker_script mylinemaker_script;
     public Vector2 pen_dims;
     public Color[] myColorArray;
 

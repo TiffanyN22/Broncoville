@@ -28,7 +28,7 @@ public class penbrush_script : MonoBehaviour, IPointerDownHandler, IDragHandler,
     // Update is called once per frame
     void Update()
     {
-        penBrushRT.anchoredPosition = new Vector2((int)(whiteboard_script.GetMouseWorldPosition().x - (whiteboard_script.textureSize.x/2)), (int)(whiteboard_script.GetMouseWorldPosition().y - (whiteboard_script.textureSize.y / 2)));
+        penBrushRT.anchoredPosition = new Vector2((int)(whiteboard_script.GetMouseWorldPosition().x - (whiteboard_script.textureSize.x / 2)), (int)(whiteboard_script.GetMouseWorldPosition().y - (whiteboard_script.textureSize.y / 2)));
     }
 
     // added extra drawing events in case mouse clicks on brush and not whiteboard (it's either this or raycasting so i choose this)

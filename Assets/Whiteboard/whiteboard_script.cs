@@ -14,10 +14,13 @@ public class Whiteboard : MonoBehaviour, IPointerDownHandler, IDragHandler, IPoi
     public Sprite sprite;
     public Vector2 textureSize;
     private int currentIndex;
+    public Vector2 lineStart;
+    public Vector2 lineEnd;
 
     public bool whiteboardHover = false;
     [SerializeField] public int penSize = 10; // default penSize
     [SerializeField] private Colors pen_script;
+    [SerializeField] private linemaker_script mylinemaker_script;
     private Image whiteboard;
     public bool mouseLeftClick;
     public bool inWhiteboardBounds;
@@ -35,6 +38,8 @@ public class Whiteboard : MonoBehaviour, IPointerDownHandler, IDragHandler, IPoi
         lastTouch = new Vector2(nullValue, nullValue);
         whiteboard = GetComponent<Image>();
         textureSize = new Vector2(x: whiteboard.rectTransform.rect.width, y: whiteboard.rectTransform.rect.height);
+        lineStart = new Vector2(0, 0);
+        lineEnd = new Vector2(0, 0);
 
         for (currentIndex = 0; currentIndex < textures.Length; currentIndex++)
         {
@@ -234,7 +239,10 @@ public class Whiteboard : MonoBehaviour, IPointerDownHandler, IDragHandler, IPoi
         Debug.Log("onpointerdown");
         if (lineMode)
         {
-            
+            lineStart = GetMouseWorldPosition();
+            mylinemaker_script.rotateLine();
+            mylinemaker_script.showLine();
+            mylinemaker_script.setLineStart();
         }
     }
 
@@ -243,11 +251,22 @@ public class Whiteboard : MonoBehaviour, IPointerDownHandler, IDragHandler, IPoi
         mouseLeftClick = false;
         lastTouch = new Vector2(nullValue, nullValue); // indicates that there were no previous pixels placed in current brushstroke
         Debug.Log("onpointerup");
+        if (lineMode)
+        {
+            lineEnd = GetMouseWorldPosition();
+            mylinemaker_script.rotateLine();
+            mylinemaker_script.hideLine();
+        }
     }
 
     public void onWhiteboardDrag()
     {
         mouseLeftClick = true;
+        if (lineMode)
+        {
+            lineEnd = GetMouseWorldPosition();
+            mylinemaker_script.rotateLine();
+        }
     }
 
 }
