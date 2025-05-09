@@ -25,7 +25,7 @@ public class Colors : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (myColor != myColorArray[0] || whiteboard_script.penSize != pen_dims.x || whiteboard_script.penSize != pen_dims.y)
+        if (myColorArray != null || myColorArray != null|| myColor != myColorArray[0] || whiteboard_script.penSize != pen_dims.x || whiteboard_script.penSize != pen_dims.y)
         {
             set_pen();
         }

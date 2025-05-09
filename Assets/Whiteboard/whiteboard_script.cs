@@ -124,6 +124,7 @@ public class Whiteboard : MonoBehaviour, IPointerDownHandler, IDragHandler, IPoi
 
     public void ClearCanvas() // classified as a move
     {
+        prepNewTexture();
         var saveColor = pen_script.myColor;
 
         for (int i = 0; i <= whiteboard.rectTransform.rect.width; i++)
@@ -134,7 +135,6 @@ public class Whiteboard : MonoBehaviour, IPointerDownHandler, IDragHandler, IPoi
             }
         }
         textures[currentIndex].Apply();
-        prepNewTexture();
 
         pen_script.myColor = saveColor;
     }
