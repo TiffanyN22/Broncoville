@@ -16,6 +16,10 @@ public class CustomizePony : MonoBehaviour
     public Sprite hair1Sprite;
     public Sprite hair2Sprite;
 
+    // Actual Pony
+    public SpriteRenderer pony;
+    public SpriteRenderer hair;
+
     private void Start()
     {
         colorSlider.onValueChanged.AddListener((value) => UpdateSpriteHue());
@@ -50,5 +54,11 @@ public class CustomizePony : MonoBehaviour
     public void SelectHair2(){
         if (displayedHairImage == null || hair2Sprite == null) return;
         displayedHairImage.sprite = hair2Sprite;
+    }
+
+    public void ClosePopup(){
+        pony.color = targetSprite.color;
+        hair.sprite = displayedHairImage.sprite;
+        gameObject.SetActive(false);
     }
 }
