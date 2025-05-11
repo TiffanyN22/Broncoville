@@ -1,0 +1,11 @@
+C:\Users\linds\OneDrive\Desktop\Projects\Broncoville\MongoDBUnity\bin\Debug\netstandard2.0\MongoDBUnity.deps.json
+C:\Users\linds\OneDrive\Desktop\Projects\Broncoville\MongoDBUnity\bin\Debug\netstandard2.0\MongoDBUnity.dll
+C:\Users\linds\OneDrive\Desktop\Projects\Broncoville\MongoDBUnity\bin\Debug\netstandard2.0\MongoDBUnity.pdb
+C:\Users\linds\OneDrive\Desktop\Projects\Broncoville\MongoDBUnity\obj\Debug\netstandard2.0\MongoDBUnity.csproj.AssemblyReference.cache
+C:\Users\linds\OneDrive\Desktop\Projects\Broncoville\MongoDBUnity\obj\Debug\netstandard2.0\MongoDBUnity.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\linds\OneDrive\Desktop\Projects\Broncoville\MongoDBUnity\obj\Debug\netstandard2.0\MongoDBUnity.AssemblyInfoInputs.cache
+C:\Users\linds\OneDrive\Desktop\Projects\Broncoville\MongoDBUnity\obj\Debug\netstandard2.0\MongoDBUnity.AssemblyInfo.cs
+C:\Users\linds\OneDrive\Desktop\Projects\Broncoville\MongoDBUnity\obj\Debug\netstandard2.0\MongoDBUnity.csproj.CoreCompileInputs.cache
+C:\Users\linds\OneDrive\Desktop\Projects\Broncoville\MongoDBUnity\obj\Debug\netstandard2.0\MongoDBUnity.sourcelink.json
+C:\Users\linds\OneDrive\Desktop\Projects\Broncoville\MongoDBUnity\obj\Debug\netstandard2.0\MongoDBUnity.dll
+C:\Users\linds\OneDrive\Desktop\Projects\Broncoville\MongoDBUnity\obj\Debug\netstandard2.0\MongoDBUnity.pdb
