@@ -6,6 +6,7 @@ QualitySettings:
   serializedVersion: 5
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
   m_CurrentQuality: 5
   m_QualitySettings:
   - serializedVersion: 2
@@ -121,11 +122,16 @@ QualitySettings:
 =======
 =======
 >>>>>>> Stashed changes
+=======
+>>>>>>> Stashed changes
   m_CurrentQuality: 1
   m_QualitySettings:
   - serializedVersion: 4
     name: Mobile
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
@@ -140,10 +146,13 @@ QualitySettings:
     shadowCascade4Split: {x: 0.06666667, y: 0.2, z: 0.46666667}
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
     shadowmaskMode: 1
     skinWeights: 2
     textureQuality: 0
 =======
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
     shadowmaskMode: 0
@@ -151,6 +160,9 @@ QualitySettings:
     globalTextureMipmapLimit: 0
     textureMipmapLimitSettings: []
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
@@ -160,12 +172,15 @@ QualitySettings:
     softVegetation: 1
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
     realtimeReflectionProbes: 1
     billboardsFaceCameraPosition: 1
     vSyncCount: 1
     lodBias: 1
     maximumLODLevel: 0
 =======
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
     realtimeReflectionProbes: 0
@@ -180,6 +195,9 @@ QualitySettings:
     maximumLODLevel: 0
     enableLODCrossFade: 1
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
@@ -196,6 +214,7 @@ QualitySettings:
     resolutionScalingFixedDPIFactor: 1
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
     customRenderPipeline: {fileID: 0}
     excludedTargetPlatforms: []
   - serializedVersion: 2
@@ -207,6 +226,8 @@ QualitySettings:
     shadowCascades: 2
     shadowDistance: 70
 =======
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
     customRenderPipeline: {fileID: 11400000, guid: 5e6cbd92db86f4b18aec3ed561671858,
@@ -231,6 +252,9 @@ QualitySettings:
     shadowCascades: 2
     shadowDistance: 40
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
@@ -239,6 +263,7 @@ QualitySettings:
     shadowCascade4Split: {x: 0.06666667, y: 0.2, z: 0.46666667}
     shadowmaskMode: 1
     skinWeights: 4
+<<<<<<< Updated upstream
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
     textureQuality: 0
@@ -290,6 +315,8 @@ QualitySettings:
 =======
 =======
 >>>>>>> Stashed changes
+=======
+>>>>>>> Stashed changes
     globalTextureMipmapLimit: 0
     textureMipmapLimitSettings: []
     anisotropicTextures: 2
@@ -308,6 +335,9 @@ QualitySettings:
     maximumLODLevel: 0
     enableLODCrossFade: 1
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
@@ -319,7 +349,11 @@ QualitySettings:
     streamingMipmapsMaxFileIORequests: 1024
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
     particleRaycastBudget: 4096
+=======
+    particleRaycastBudget: 256
+>>>>>>> Stashed changes
 =======
     particleRaycastBudget: 256
 >>>>>>> Stashed changes
@@ -330,6 +364,7 @@ QualitySettings:
     asyncUploadBufferSize: 16
     asyncUploadPersistentBuffer: 1
     resolutionScalingFixedDPIFactor: 1
+<<<<<<< Updated upstream
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
     customRenderPipeline: {fileID: 0}
@@ -350,6 +385,8 @@ QualitySettings:
     iPhone: 2
     tvOS: 2
 =======
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
     customRenderPipeline: {fileID: 11400000, guid: 4b83569d67af61e458304325a23e5dfd,
@@ -384,6 +421,9 @@ QualitySettings:
     iPhone: 0
     tvOS: 0
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
