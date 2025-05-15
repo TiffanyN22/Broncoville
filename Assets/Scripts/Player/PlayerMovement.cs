@@ -7,12 +7,10 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float normalSpeed = 2;
     [SerializeField] private float sprintSpeed = 3;
     private Animator animator;
-    private Transform transform;
     private Vector3 direction;
 
     void Start()
     {
-        transform = GetComponent<Transform>();
         animator = GetComponent<Animator>();
     }
 

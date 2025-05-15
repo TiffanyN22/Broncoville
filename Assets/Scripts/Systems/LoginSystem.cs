@@ -97,7 +97,7 @@ public partial struct ServerLoginSystem : ISystem
 				// Send a message to the client telling to load the main hub sub scene.
 				Entity loadMainHub = commandBuffer.CreateEntity();
 
-				commandBuffer.AddComponent(loadMainHub, new LoadSceneRpc{subsceneHash = new Unity.Entities.Hash128(GameObject.FindFirstObjectByType<ConnectionManager>().GetMainHubSubScene().SceneGUID.Value)});
+				commandBuffer.AddComponent(loadMainHub, new LoadSceneRpc{subsceneHash = GameObject.FindFirstObjectByType<SubSceneManager>().GetMainHubGUID()});
 				commandBuffer.AddComponent(loadMainHub, new SendRpcCommandRequest{TargetConnection = request.ValueRO.SourceConnection});
 
 				// Spawn the player in the world and set it's owner to the newly signed in client.

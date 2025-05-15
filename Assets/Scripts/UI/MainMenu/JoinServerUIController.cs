@@ -57,7 +57,7 @@ public class JoinServerUIController : UIBase
 	public void Update()
 	{
 		// Wait until a successful connection is made before opening the login menu.
-		if(FindFirstObjectByType<ConnectionManager>().IsClientConnected())
+		if(FindFirstObjectByType<ClientManager>().IsConnected())
 		{
 			Destroy(this.loadingScreen.gameObject);
 			Instantiate(this.loginPrefab, this.transform.parent).Open(this);
@@ -98,10 +98,7 @@ public class JoinServerUIController : UIBase
 		this.loadingScreen.SetLoadingMessage("Joining...");
 
 		// Send a connect request to the server.
-		ConnectionManager connectionManager = FindFirstObjectByType<ConnectionManager>();
-		connectionManager.SetClientAddress(this.addressField.text);
-		connectionManager.SetPort(ushort.Parse(this.portField.text));
-		connectionManager.ConnectClient();
+		FindFirstObjectByType<ClientManager>().Connect(this.addressField.text, ushort.Parse(this.portField.text));
 	}
 
 	/// <summary>

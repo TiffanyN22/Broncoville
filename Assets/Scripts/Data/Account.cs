@@ -4,10 +4,25 @@ using Unity.Collections;
 using Unity.Entities;
 using UnityEngine;
 
+public enum HairStyle
+{
+	STRAIGHT,
+	WAVY
+}
+
 public struct AccountData : IComponentData
 {
 	/// <summary>The account's username.</summary>
 	public FixedString32Bytes name;
+
+	/// <summary>The player's body color.</summary>
+	public int bodyColor;
+
+	/// <summary>The player's hair color.</summary>
+	public int hairColor;
+
+	/// <summary>The player's hair style.</summary>
+	public HairStyle hairStyle;
 }
 
 [System.Serializable]
@@ -18,6 +33,15 @@ public class Account
 	
 	/// <summary>The account's password.</summary>
 	[SerializeField] private string password;
+
+	/// <summary>The account's password.</summary>
+	[SerializeField] private int bodyColor;
+
+	/// <summary>The account's password.</summary>
+	[SerializeField] private int hairColor;
+
+	/// <summary>The account's password.</summary>
+	[SerializeField] private string hairStyle;
 
 	public Account(string username, string password)
 	{

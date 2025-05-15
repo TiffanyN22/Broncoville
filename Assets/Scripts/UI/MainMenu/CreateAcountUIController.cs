@@ -54,7 +54,7 @@ public class CreateAccountUIController : UIBase
 		}
 		
 		// Check for entities containing the create account response message.
-		EntityManager entities = FindFirstObjectByType<ConnectionManager>().GetClientEntityManager();
+		EntityManager entities = FindFirstObjectByType<ClientManager>().GetEntityManager();
 		EntityQuery connections = entities.CreateEntityQuery(ComponentType.ReadOnly<CreateAccountResponseRpc>());
 	
 		// If a create account response was found, go back to the log in screen or show an error.
@@ -110,7 +110,7 @@ public class CreateAccountUIController : UIBase
 		this.loadingScreen.SetLoadingMessage("Creating Account...");
 		
 		// Send a create account request to the server.
-		EntityManager clientManager = FindFirstObjectByType<ConnectionManager>().GetClientEntityManager();
+		EntityManager clientManager = FindFirstObjectByType<ClientManager>().GetEntityManager();
 		Entity createAccountRequest = clientManager.CreateEntity(typeof(CreateAccountRequestRpc), typeof(SendRpcCommandRequest));
 		clientManager.SetComponentData(createAccountRequest, new CreateAccountRequestRpc{username = this.usernameField.text, password = this.passwordField.text});
 	}

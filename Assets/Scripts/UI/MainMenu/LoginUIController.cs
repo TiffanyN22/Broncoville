@@ -73,8 +73,8 @@ public class LoginUIController : UIBase
 			return;
 		}
 
-		ConnectionManager manager = FindFirstObjectByType<ConnectionManager>();
-		EntityManager entities = manager.GetClientWorld().EntityManager;
+		ClientManager client = FindFirstObjectByType<ClientManager>();
+		EntityManager entities = client.GetEntityManager();
 		
 		if(!this.loggedIn)
 		{
@@ -106,18 +106,19 @@ public class LoginUIController : UIBase
 		
 		// Check for entities containing sub scenes.
 		EntityQuery scenes = entities.CreateEntityQuery(ComponentType.ReadOnly<SceneReference>());
+		SubSceneManager sceneManager = FindFirstObjectByType<SubSceneManager>();
 
 		// If a sub scene was found, check if it's the main hub and whether or not it's loaded.
 		foreach(Entity entity in scenes.ToEntityArray(Allocator.Temp))
 		{
 			SceneReference subscene = entities.GetComponentData<SceneReference>(entity);
 
-			if(subscene.SceneGUID != manager.GetMainHubSubScene().SceneGUID)
+			if(subscene.SceneGUID != sceneManager.GetMainHubGUID())
 			{
 				continue;
 			}
 
-			if(SceneSystem.IsSceneLoaded(manager.GetClientWorld().Unmanaged, entity))
+			if(SceneSystem.IsSceneLoaded(client.GetWorld().Unmanaged, entity))
 			{
 				Destroy(this.loadingScreen.gameObject);
 				this.Close();
@@ -130,7 +131,7 @@ public class LoginUIController : UIBase
 	/// </summary>
 	public new void Back()
 	{
-		FindFirstObjectByType<ConnectionManager>().DisconnectClient();
+		FindFirstObjectByType<ClientManager>().Disconnect();
 		base.Back();
 	}
 
@@ -168,9 +169,9 @@ public class LoginUIController : UIBase
 		loadingScreen.SetLoadingMessage("Logging in...");
 
 		// Send a log in request to the server.
-		EntityManager clientManager = FindFirstObjectByType<ConnectionManager>().GetClientEntityManager();
-		Entity loginRequest = clientManager.CreateEntity(typeof(LoginRequestRpc), typeof(SendRpcCommandRequest));
-		clientManager.SetComponentData(loginRequest, new LoginRequestRpc{username = this.usernameField.text, password = this.passwordField.text});
+		EntityManager entities = FindFirstObjectByType<ClientManager>().GetEntityManager();
+		Entity loginRequest = entities.CreateEntity(typeof(LoginRequestRpc), typeof(SendRpcCommandRequest));
+		entities.SetComponentData(loginRequest, new LoginRequestRpc{username = this.usernameField.text, password = this.passwordField.text});
 	}
 
 	/// <summary>
