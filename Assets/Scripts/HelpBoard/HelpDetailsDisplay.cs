@@ -1,5 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Entities;
+using Unity.NetCode;
+using Unity.Collections;
 using TMPro;
 using UnityEngine;
 
@@ -12,10 +15,16 @@ public class HelpDetailsDisplay : MonoBehaviour
     [SerializeField] private GameObject helpDetails;
     [SerializeField] private GameObject helpList;
 
-    public void updateInfo(string topicText, string requesterText, string descriptionText){
-      topic.text = topicText;
-      requester.text = "Requested by " + requesterText;
-      description.text = descriptionText;
+    public void updateInfo(HelpDetailsInfo info){
+      topic.text = info.topic;;
+      requester.text = "Requested by " + info.requester;
+
+      // Send a request to get description
+      EntityManager clientManager = FindFirstObjectByType<ClientManager>().GetEntityManager();
+      Entity getHelpDescriptionRequest = clientManager.CreateEntity(typeof(GetHelpDescriptionRpc), typeof(SendRpcCommandRequest));
+      clientManager.SetComponentData(getHelpDescriptionRequest, new GetHelpDescriptionRpc{id = info.guid});
+
+      description.text = info.description;
     }
 
     public void CloseDetailsDisplay(){
