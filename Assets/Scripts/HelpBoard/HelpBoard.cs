@@ -2,22 +2,56 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
-
+using Unity.Entities;
+using Unity.NetCode;
+using Unity.Collections;
 public class HelpBoard : MonoBehaviour
 {
-  [SerializeField] private  List<HelpDetailsInfo> allHelpItems = new List<HelpDetailsInfo>();
-  // TODO: create interface to create help items
-  [SerializeField] private GameObject helpItemPrefab;
-  [SerializeField] private Transform helpListContent;
-  [SerializeField] private GameObject helpDetails;
-  [SerializeField] private GameObject helpList;
+    // TODO: create interface to create help items
+    private HelpDetailsInfo[] allHelpItems = null;
+    private Dictionary<int, List<string>> allHelpDescriptions = new Dictionary<int, List<string>>();
+    [SerializeField] private GameObject helpItemPrefab;
+    [SerializeField] private Transform helpListContent;
+    [SerializeField] private GameObject helpDetails;
+    [SerializeField] private GameObject helpList;
 
-  void Start()
+    void Start()
     {
-        refreshHelpDetails();
+        // Send a create account request to the server.
+		EntityManager clientManager = FindFirstObjectByType<ClientManager>().GetEntityManager();
+		Entity getHelp = clientManager.CreateEntity(typeof(GetHelpRpc), typeof(SendRpcCommandRequest));
     }
 
-    public void refreshHelpDetails(){
+    public void Update()
+    {
+        // Check for entities containing the create account response message.
+        EntityManager entities = FindFirstObjectByType<ClientManager>().GetEntityManager();
+        EntityQuery entries = entities.CreateEntityQuery(ComponentType.ReadOnly<HelpBoardEntryRpc>());
+
+        // If a create account response was found, go back to the log in screen or show an error.
+        foreach (Entity entity in entries.ToEntityArray(Allocator.Temp))
+        {
+            HelpBoardEntryRpc response = entities.GetComponentData<HelpBoardEntryRpc>(entity);
+
+            if (allHelpItems == null)
+            {
+                allHelpItems = new HelpDetailsInfo[response.numHelpBoardEntries];
+                for (int i = 0; i < response.numHelpBoardEntries; i++)
+                {
+                    allHelpItems[i] = new HelpDetailsInfo("Loading...", "Loading...", "Loading...");
+                }
+            }
+            allHelpItems[response.id].topic = response.topic.ToString();
+            allHelpItems[response.id].requester = response.requester.ToString();
+
+            refreshHelpDetails();
+
+            entities.DestroyEntity(entity);
+        }
+    }
+
+    public void refreshHelpDetails()
+    {
         // delete previous items
         foreach (Transform child in helpListContent)
         {
@@ -25,7 +59,8 @@ public class HelpBoard : MonoBehaviour
         }
 
         // add allHelpItems
-        foreach(HelpDetailsInfo curItem in allHelpItems){
+        foreach (HelpDetailsInfo curItem in allHelpItems)
+        {
             AddItemToScrollview(curItem);
         }
     }
@@ -41,7 +76,7 @@ public class HelpBoard : MonoBehaviour
         helpItem.transform.localScale = Vector3.one;
     }
 
-    public List<HelpDetailsInfo> GetAllHelpItems()
+    public HelpDetailsInfo[] GetAllHelpItems()
     {
         return allHelpItems;
     }
