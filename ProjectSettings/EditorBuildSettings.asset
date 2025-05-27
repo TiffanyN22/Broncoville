@@ -7,18 +7,7 @@ EditorBuildSettings:
   m_Scenes:
   - enabled: 1
     path: Assets/Scenes/SampleScene.unity
-<<<<<<< Updated upstream
-    guid: 2cda990e2423bbf4892e6590ba056729
-  - enabled: 1
-    path: Assets/Scenes/TownScene.unity
-    guid: e1e13b4c80dcc42778ced98d5168fb9c
-  - enabled: 1
-    path: Assets/Scenes/StudyRoomScene.unity
-    guid: 7043fc78022544e3691922c067ba9dba
-  m_configObjects: {}
-=======
     guid: 99c9720ab356a0642a771bea13969a05
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   m_UseUCBPForAssetBundles: 0
->>>>>>> Stashed changes

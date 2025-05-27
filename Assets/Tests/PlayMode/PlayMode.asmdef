@@ -1,10 +1,10 @@
 {
-    "name": "PlayUnitTest",
+    "name": "PlayMode",
     "rootNamespace": "",
     "references": [
         "UnityEngine.TestRunner",
         "UnityEditor.TestRunner",
-        "StudyRoomAssembly"
+        "Scripts"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

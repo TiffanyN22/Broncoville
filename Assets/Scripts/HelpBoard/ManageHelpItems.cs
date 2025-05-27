@@ -51,7 +51,7 @@ public class ManageHelpItems : MonoBehaviour
     public void ClickedAddItem(){
         if ((addItemTitleInput.text != "") && (addItemDescriptionInput.text != "")){
             HelpDetailsInfo newHelpItem = new HelpDetailsInfo(addItemTitleInput.text , username, addItemDescriptionInput.text);
-            helpBoard.GetAllHelpItems().Add(newHelpItem);
+            // helpBoard.GetAllHelpItems().Add(newHelpItem); TODO
             ClickedCloseAddItem();
         }
     }
@@ -84,11 +84,11 @@ public class ManageHelpItems : MonoBehaviour
 
     public void AddMyItemToScrollview(HelpDetailsInfo newItem)
     {
-        GameObject helpItemObject = Instantiate(myHelpItemsPrefab, myHelpListContent);
-        MyHelpBoardItem helpItem = helpItemObject.GetComponent<MyHelpBoardItem>();
-        helpItem.SetInfo(newItem.topic, username);
-        helpItem.SetAllHelpItems(helpBoard.GetAllHelpItems());
-        helpItem.SetManageHelpItems(this);
-        helpItem.transform.localScale = Vector3.one;
+        // GameObject helpItemObject = Instantiate(myHelpItemsPrefab, myHelpListContent);
+        // MyHelpBoardItem helpItem = helpItemObject.GetComponent<MyHelpBoardItem>();
+        // helpItem.SetInfo(newItem.topic, username);
+        // helpItem.SetAllHelpItems(helpBoard.GetAllHelpItems());
+        // helpItem.SetManageHelpItems(this);
+        // helpItem.transform.localScale = Vector3.one;
     }
 }
