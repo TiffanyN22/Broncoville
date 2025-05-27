@@ -2046,7 +2046,7 @@ SpriteRenderer:
   m_Size: {x: 11.22, y: 9.16}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!68 &196652764
@@ -7159,7 +7159,7 @@ SpriteRenderer:
   m_Size: {x: 11.22, y: 9.16}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!68 &919789020
@@ -8518,7 +8518,7 @@ SpriteRenderer:
   m_Size: {x: 11.22, y: 9.16}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!68 &1175935085
@@ -10695,26 +10695,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e0c9a9b9fd04746fe9d1e19cc9fada01, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  allHelpItems:
-  - topic: CSEN 12
-    requester: Tiffany
-    description: save me lol
-  - topic: Guest Speaker
-    requester: Idiot
-    description: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-      eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
-      veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-      consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum
-      dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident,
-      sunt in culpa qui officia deserunt mollit anim id est laborum.
-  - topic: ECEN 153
-    requester: Tiffer
-    description: I have no idea how to solve any of the problems and my midterm is
-      tomorrow, PLS SAVE ME. Any help welcome
-  - topic: Flyer
-    requester: Broncosec
-    description: If there are any incredibly talented artists out there, we're looking
-      for someone to create flyers to advertise a workshop. Thanks!
   helpItemPrefab: {fileID: 8571972484667362749, guid: 90b07127613be41079371d08cd1db8ab, type: 3}
   helpListContent: {fileID: 1625745993}
   helpDetails: {fileID: 914426504}
@@ -11326,7 +11306,7 @@ SpriteRenderer:
   m_Size: {x: 11.22, y: 9.16}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!68 &1592750873
@@ -12179,7 +12159,7 @@ SpriteRenderer:
   m_Size: {x: 11.22, y: 9.16}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!1 &1679475964
@@ -12276,8 +12256,8 @@ RectTransform:
   m_LocalScale: {x: 0, y: 0, z: 0}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 1306523206}
   - {fileID: 1599945987}
+  - {fileID: 1306523206}
   - {fileID: 44309161}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -12443,7 +12423,7 @@ SpriteRenderer:
   m_Size: {x: 11.22, y: 9.16}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!1 &1755932759
@@ -14188,7 +14168,7 @@ SpriteRenderer:
   m_Size: {x: 11.22, y: 9.16}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!68 &2027054015

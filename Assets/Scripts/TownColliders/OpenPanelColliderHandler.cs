@@ -1,14 +1,41 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using UnityEngine.UI;
 public class OpenPanelColliderHandler : MonoBehaviour
 {
     [SerializeField] private GameObject panel;
-    private void OnTriggerEnter2D(Collider2D other){
-        if (other.CompareTag("Player")) // Make sure the player has the "Player" tag
+    private bool userInCollider = false;
+    void Start()
+    {
+        panel.SetActive(true);
+        Debug.Log("starting");
+    }
+
+    void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.E))
         {
-            if (!panel.activeSelf) panel.SetActive(true);
+            Debug.Log("user pressed e!");
+            if (!panel.activeSelf)
+                panel.SetActive(true);
         }
-    } 
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        Debug.Log("Testing");
+        // if (other.CompareTag("Player"))
+        // {
+        // if (!panel.activeSelf)
+        //     panel.SetActive(true);
+        // }
+        // TODO: change sprite
+        userInCollider = true;
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        userInCollider = false;
+    }
 }
