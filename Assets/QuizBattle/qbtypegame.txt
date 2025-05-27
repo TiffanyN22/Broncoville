@@ -1,0 +1,21 @@
+format: <lcurlybrace>question~answer<rcurlybrace>
+{question~answer]
+{question 1~answer 1}
+{which game designer created kirby?~masahiro sakurai}
+{what was kirby's original name during development?~popopo}
+{what american lawyer was kirby named after?~john kirby}
+{how many centimeters tall is kirby?~20}
+{in what game did meta knight first appear?~kirby's adventure}
+{what is the name of the meta knight boss fight level in kirby star allies?~sacred square}
+{what did daroach steal from kirby in kirby squeak squad?~strawberry shortcake}
+{who is kirby's original va?~makiko ohmoto}
+{NOT  AQUESTION!!! LINE11}
+{what is kirby's home planet?~planet popstar}
+{as of 2025, how many kirby games are there?~39}
+{what color is kirby?~pink}
+{NOT A QUESTION LINE 14
+{what color is bandana waddle dee's bandana?~blue}
+{what year was kirby's dream land released?~1992}
+{how many permanent locations does kirby's cafe have?~2}
+{what kirby game holds the worst metacritic score?~team kirby clash deluxe}
+{what is the name of the hamster in kirby?~rick}
