@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System;
 using UnityEngine;
 using Unity.Entities;
 using Unity.NetCode;
@@ -14,17 +15,9 @@ public struct HelpBoardEntryRpc : IRpcCommand
   public FixedString32Bytes requester;
   public int id;
   public int numHelpBoardEntries;
+  public FixedString128Bytes guid;
+  // public Guid guid;
 }
-
-public struct HelpBoardEntryDescriptionRpc : IRpcCommand
-{
-  public int id;
-  // public int descriptionNumPackets;
-  public int index;
-  public FixedString128Bytes description;
-}
-
-
 
 [WorldSystemFilter(WorldSystemFilterFlags.ServerSimulation)]
 public partial struct ServerHelpBoardSystem : ISystem
@@ -48,15 +41,10 @@ public partial struct ServerHelpBoardSystem : ISystem
       for (int i = 0; i < allHelpItems.Count; ++i)
       {
         Entity response = commandBuffer.CreateEntity();
-        commandBuffer.AddComponent(response, new HelpBoardEntryRpc { topic = allHelpItems[i].topic, requester = allHelpItems[i].requester, id = i, numHelpBoardEntries = allHelpItems.Count});
+        HelpBoardEntryRpc newRpc = new HelpBoardEntryRpc { topic = allHelpItems[i].topic, requester = allHelpItems[i].requester, id = i, numHelpBoardEntries = allHelpItems.Count, guid = allHelpItems[i].guid.ToString()};
+        Debug.Log(newRpc.guid);
+        commandBuffer.AddComponent(response,newRpc);
         commandBuffer.AddComponent(response, new SendRpcCommandRequest { TargetConnection = request.ValueRO.SourceConnection });
-        int descriptionLength = allHelpItems[i].description.Length;
-        // for (int j = 0; j < descriptionLength; j += 125)
-        // {
-        //   Entity descriptionResponse = commandBuffer.CreateEntity();
-        //   commandBuffer.AddComponent(descriptionResponse, new HelpBoardEntryDescriptionRpc { id = i, index = j / 125, description = allHelpItems[i].description.Substring(j, min(descriptionLength - j, 125)) });
-        //   commandBuffer.AddComponent(descriptionResponse, new SendRpcCommandRequest { TargetConnection = request.valueRO.SourceConnection });
-        // }
       }
 
       commandBuffer.DestroyEntity(entity);

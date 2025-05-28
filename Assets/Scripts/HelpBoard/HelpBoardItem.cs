@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -32,20 +33,25 @@ public class HelpBoardItem : MonoBehaviour
       // GameObject helpDetails = helpDetailsTransform.gameObject;
       if (!helpDetails.activeSelf) helpDetails.SetActive(true);
       if (helpList.activeSelf) helpList.SetActive(false);
-      helpDetails.GetComponent<HelpDetailsDisplay>().updateInfo(helpDetailsInfo.topic, helpDetailsInfo.requester, helpDetailsInfo.description);
+      helpDetails.GetComponent<HelpDetailsDisplay>().updateInfo(helpDetailsInfo);
     }
 }
 
-[System.Serializable] 
-public struct HelpDetailsInfo {
-    public string topic; // TODO: input validation so can't be more than 125 characters
-    public string requester;
-    public string description;
+[System.Serializable]
+public class HelpDetailsInfo
+{
+  public string topic; // TODO: input validation so can't be more than 125 characters
+  public string requester;
+  public string description;
+  public Guid guid;
 
-    public HelpDetailsInfo(string topic, string requester, string description)
-    {
-        this.topic = topic;
-        this.requester = requester;
-        this.description = description;
-    }
+  public HelpDetailsInfo(string topic, string requester, string description): this(topic, requester, description, Guid.NewGuid()){}
+
+  public HelpDetailsInfo(string topic, string requester, string description, Guid guid)
+  {
+    this.topic = topic;
+    this.requester = requester;
+    this.description = description;
+    this.guid = guid;
+  }
 }
