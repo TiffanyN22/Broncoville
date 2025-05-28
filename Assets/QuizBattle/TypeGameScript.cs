@@ -9,6 +9,8 @@ using UnityEngine.UI;
 
 public class TypeGameScript : MonoBehaviour
 {
+    [SerializeField] public QuizBattleSceneManagerScript QBSceneManagerScript;
+
     [SerializeField] public TextAsset TypeGameQuestions;
     [SerializeField] public TMP_Text QuestionCardText;
     [SerializeField] public TMP_Text AnswerFieldInputText;
@@ -139,6 +141,11 @@ public class TypeGameScript : MonoBehaviour
             AnswerField.ActivateInputField(); // keep input field selected (it auto clicks off otherwise)
             nextQuestion();
         }
+    }
+
+    public void endButtonPress()
+    {
+        QBSceneManagerScript.PlayTypeGame();
     }
 
     // QUESTION AND ANSWER GENERATION
