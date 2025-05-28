@@ -15,7 +15,8 @@ public struct HelpBoardEntryRpc : IRpcCommand
   public FixedString32Bytes requester;
   public int id;
   public int numHelpBoardEntries;
-  public Guid guid;
+  public FixedString128Bytes guid;
+  // public Guid guid;
 }
 
 [WorldSystemFilter(WorldSystemFilterFlags.ServerSimulation)]
@@ -40,7 +41,9 @@ public partial struct ServerHelpBoardSystem : ISystem
       for (int i = 0; i < allHelpItems.Count; ++i)
       {
         Entity response = commandBuffer.CreateEntity();
-        commandBuffer.AddComponent(response, new HelpBoardEntryRpc { topic = allHelpItems[i].topic, requester = allHelpItems[i].requester, id = i, numHelpBoardEntries = allHelpItems.Count, guid = allHelpItems[i].guid});
+        HelpBoardEntryRpc newRpc = new HelpBoardEntryRpc { topic = allHelpItems[i].topic, requester = allHelpItems[i].requester, id = i, numHelpBoardEntries = allHelpItems.Count, guid = allHelpItems[i].guid.ToString()};
+        Debug.Log(newRpc.guid);
+        commandBuffer.AddComponent(response,newRpc);
         commandBuffer.AddComponent(response, new SendRpcCommandRequest { TargetConnection = request.ValueRO.SourceConnection });
       }
 

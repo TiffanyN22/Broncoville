@@ -1,4 +1,10 @@
 fileFormatVersion: 2
+<<<<<<< Updated upstream
+=======
+<<<<<<<< HEAD:Assets/Settings/Mobile_Renderer.asset.meta
+guid: cc7a3f0ae6ecb43ed8868a5a4856e995
+========
+>>>>>>> Stashed changes
 guid: 016f386d295a749798bd0e093d2526a3
 NativeFormatImporter:
   externalObjects: {}

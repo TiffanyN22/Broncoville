@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System;
 using TMPro;
 using UnityEngine;
 using Unity.Entities;
@@ -9,7 +10,7 @@ public class HelpBoard : MonoBehaviour
 {
     // TODO: create interface to create help items
     private HelpDetailsInfo[] allHelpItems = null;
-    private Dictionary<int, List<string>> allHelpDescriptions = new Dictionary<int, List<string>>();
+    // private Dictionary<int, List<string>> allHelpDescriptions = new Dictionary<int, List<string>>();
     [SerializeField] private GameObject helpItemPrefab;
     [SerializeField] private Transform helpListContent;
     [SerializeField] private GameObject helpDetails;
@@ -43,6 +44,9 @@ public class HelpBoard : MonoBehaviour
             }
             allHelpItems[response.id].topic = response.topic.ToString();
             allHelpItems[response.id].requester = response.requester.ToString();
+            allHelpItems[response.id].guid = Guid.Parse(response.guid.ToString()); // TODO: fix
+            Debug.Log(response.guid);
+            // Debug.Log(response);
 
             refreshHelpDetails();
 

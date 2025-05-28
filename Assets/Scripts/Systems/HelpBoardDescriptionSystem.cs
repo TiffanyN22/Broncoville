@@ -6,7 +6,8 @@ using Unity.NetCode;
 using Unity.Collections;
 public struct GetHelpDescriptionRpc : IRpcCommand
 {
-  public Guid id;
+  // public Guid id;
+  public FixedString128Bytes id;
 }
 
 public struct HelpBoardEntryDescriptionRpc : IRpcCommand
@@ -36,7 +37,9 @@ public partial struct ServerHelpBoardDescriptionSystem : ISystem
     // Get all unprocessed create account requests and iterate through them all.
     foreach ((RefRO<GetHelpDescriptionRpc> getHelpDescription, RefRO<ReceiveRpcCommandRequest> request, Entity entity) in SystemAPI.Query<RefRO<GetHelpDescriptionRpc>, RefRO<ReceiveRpcCommandRequest>>().WithEntityAccess())
     {
-      HelpDetailsInfo helpItem = GameObject.FindFirstObjectByType<HelpBoardEntryList>().getHelpDetailsInfoByGuid(getHelpDescription.ValueRO.id);
+      Debug.Log("Help Board description system");
+      Debug.Log(getHelpDescription.ValueRO.id);
+      HelpDetailsInfo helpItem = GameObject.FindFirstObjectByType<HelpBoardEntryList>().getHelpDetailsInfoByGuid(Guid.Parse(getHelpDescription.ValueRO.id.ToString()));
       int descriptionLength = helpItem.description.Length;
       for (int j = 0; j < descriptionLength; j += 125)
       {
@@ -44,7 +47,6 @@ public partial struct ServerHelpBoardDescriptionSystem : ISystem
         commandBuffer.AddComponent(descriptionResponse, new HelpBoardEntryDescriptionRpc {descriptionNumPackets = descriptionLength / 125 + 1, index = j / 125, description = helpItem.description.Substring(j, Math.Min(descriptionLength - j, 125))});
         commandBuffer.AddComponent(descriptionResponse, new SendRpcCommandRequest { TargetConnection = request.ValueRO.SourceConnection });
       }
-
       commandBuffer.DestroyEntity(entity);
 		}
 

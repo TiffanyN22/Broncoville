@@ -38,7 +38,7 @@ public class HelpBoardItem : MonoBehaviour
 }
 
 [System.Serializable]
-public struct HelpDetailsInfo
+public class HelpDetailsInfo
 {
   public string topic; // TODO: input validation so can't be more than 125 characters
   public string requester;

@@ -579,7 +579,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 119859326}
   m_Direction: 2
   m_Value: 0
-  m_Size: 0.15263742
+  m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -776,7 +776,7 @@ RectTransform:
   m_Father: {fileID: 2004622065}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 0.15263742}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 20, y: 20}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -6955,6 +6955,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 968c9a8d917f04c04bd381389d03c3ec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  allHelpItemsList:
+  - topic: testing 1
+    requester: tiffany
+    description: helpppppp
+  - topic: testing 2
+    requester: alex
+    description: helpppppp helpppppp helpppppp
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
