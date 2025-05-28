@@ -847,6 +847,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e0c9a9b9fd04746fe9d1e19cc9fada01, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  allHelpItems: []
   helpItemPrefab: {fileID: 8571972484667362749, guid: 90b07127613be41079371d08cd1db8ab, type: 3}
   helpListContent: {fileID: 908690464}
   helpDetails: {fileID: 1484058016}

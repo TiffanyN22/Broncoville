@@ -33,5 +33,14 @@ public class HelpBoardEntryList : MonoBehaviour
     return allHelpItems[guid];
   }
 
+  public void addItem(HelpDetailsInfo newInfo)
+  {
+    if (newInfo.guid == Guid.Empty)
+    {
+      newInfo.guid = Guid.NewGuid();
+    }
+    allHelpItemsList.Add(newInfo);
+    allHelpItems.Add(newInfo.guid, newInfo);
+  }
     // TODO: set/edit functions
 }

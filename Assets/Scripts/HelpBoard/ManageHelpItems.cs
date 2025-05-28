@@ -3,6 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using TMPro;
+using Unity.Collections;
+using Unity.Entities;
+using Unity.NetCode;
+using UnityEngine;
+using UnityEngine.UI;
 
 public class ManageHelpItems : MonoBehaviour
 {
@@ -18,6 +23,8 @@ public class ManageHelpItems : MonoBehaviour
     // AddHelpItem Variable
     [SerializeField] private TMP_InputField addItemTitleInput;
     [SerializeField] private TMP_InputField addItemDescriptionInput;
+
+    List<HelpDetailsInfo> myHelpItems;
 
     // Start is called before the first frame update
     void Start()
@@ -42,6 +49,9 @@ public class ManageHelpItems : MonoBehaviour
 
     public void ClickedCloseAddItem(){
         if (addHelpItemGroup != null && addHelpItemGroup.activeSelf) addHelpItemGroup.SetActive(false);
+        // if (helpListGroup != null && !helpListGroup.activeSelf) helpListGroup.SetActive(true);
+
+        // helpBoard.refreshItemListFromServer();
         if (myHelpItemsGroup != null && !myHelpItemsGroup.activeSelf) myHelpItemsGroup.SetActive(true);
         showMyHelpItems();
         addItemTitleInput.text = "";
@@ -51,7 +61,13 @@ public class ManageHelpItems : MonoBehaviour
     public void ClickedAddItem(){
         if ((addItemTitleInput.text != "") && (addItemDescriptionInput.text != "")){
             HelpDetailsInfo newHelpItem = new HelpDetailsInfo(addItemTitleInput.text , username, addItemDescriptionInput.text);
-            // helpBoard.GetAllHelpItems().Add(newHelpItem); TODO
+
+            // Create
+            EntityManager clientManager = FindFirstObjectByType<ClientManager>().GetEntityManager();
+            Entity createHelpItemRequest = clientManager.CreateEntity(typeof(CreateHelpItemRequestRpc), typeof(SendRpcCommandRequest));
+            clientManager.SetComponentData(createHelpItemRequest, new CreateHelpItemRequestRpc{topic = addItemTitleInput.text, requester = username, numHelpBoardEntries = 1});
+
+            myHelpItems.Add(newHelpItem);
             ClickedCloseAddItem();
         }
     }
@@ -59,6 +75,7 @@ public class ManageHelpItems : MonoBehaviour
     public void ClickedViewMyItems(){
         if (helpListGroup != null && helpListGroup.activeSelf) helpListGroup.SetActive(false);
         if (myHelpItemsGroup != null && !myHelpItemsGroup.activeSelf) myHelpItemsGroup.SetActive(true);
+        myHelpItems = helpBoard.GetAllHelpItems().Where(h => h.requester == username).ToList();
         showMyHelpItems();
     }
 
@@ -76,7 +93,6 @@ public class ManageHelpItems : MonoBehaviour
         }
 
         // add new items
-        List<HelpDetailsInfo> myHelpItems = helpBoard.GetAllHelpItems().Where(h => h.requester == username).ToList();
         foreach(HelpDetailsInfo curItem in myHelpItems){
             AddMyItemToScrollview(curItem);
         }
@@ -84,11 +100,11 @@ public class ManageHelpItems : MonoBehaviour
 
     public void AddMyItemToScrollview(HelpDetailsInfo newItem)
     {
-        // GameObject helpItemObject = Instantiate(myHelpItemsPrefab, myHelpListContent);
-        // MyHelpBoardItem helpItem = helpItemObject.GetComponent<MyHelpBoardItem>();
-        // helpItem.SetInfo(newItem.topic, username);
-        // helpItem.SetAllHelpItems(helpBoard.GetAllHelpItems());
-        // helpItem.SetManageHelpItems(this);
-        // helpItem.transform.localScale = Vector3.one;
+        GameObject helpItemObject = Instantiate(myHelpItemsPrefab, myHelpListContent);
+        MyHelpBoardItem helpItem = helpItemObject.GetComponent<MyHelpBoardItem>();
+        helpItem.SetInfo(newItem.topic, username);
+        helpItem.SetAllHelpItems(helpBoard.GetAllHelpItems().ToList());
+        helpItem.SetManageHelpItems(this);
+        helpItem.transform.localScale = Vector3.one;
     }
 }
