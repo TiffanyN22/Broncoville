@@ -1,6 +1,7 @@
 using Unity.Collections;
 using Unity.Entities;
 using Unity.NetCode;
+using UnityEngine;
 
 public struct CreateAccountRequestRpc : IRpcCommand
 {
@@ -59,7 +60,7 @@ public partial struct ServerCreateAccountSystem : ISystem
 				}
 				else
 				{
-					Account account = new Account(username, password);
+					Account account = new Account(username, password, new Color(Random.value, Random.value, Random.value, 1f),  new Color(Random.value, Random.value, Random.value, 1f), HairStyle.STRAIGHT);
 					account.SaveToFile();
 				}
 			}

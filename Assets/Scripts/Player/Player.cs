@@ -3,13 +3,14 @@ using UnityEngine;
 
 public struct PlayerData : IComponentData
 {
-	// I'm so empty.
+	public float nextFrameTime;
+	public int frame;
 }
 
 [DisallowMultipleComponent]
 public class Player : MonoBehaviour
 {
-	// I am the void.
+	// I must consume.
 }
 
 class PlayerBaker : Baker<Player>

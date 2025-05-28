@@ -62,10 +62,12 @@ public partial struct ServerLoginSystem : ISystem
 				}
 			}
 
+			Account account = null;
+
 			// If the account is not in use, attempt to sign in.
 			if(success)
 			{
-				Account account = Account.LoadFromFile(username);
+				account = Account.LoadFromFile(username);
 				string password = login.ValueRO.password.ToString();
 
 				// If the account doesn't exist or the password is wrong, send the client a vague message.
@@ -105,6 +107,7 @@ public partial struct ServerLoginSystem : ISystem
 				Entity newPlayer = commandBuffer.Instantiate(spawner.player);
 				NetworkId playerId = this.clients[request.ValueRO.SourceConnection];
 				
+				commandBuffer.AddComponent(newPlayer, new AccountData{name = account.GetUsername(), bodyColor = account.GetBodyColor(), hairColor = account.GetHairColor(), hairStyle = account.GetHairStyle()});
 				commandBuffer.SetComponent(newPlayer, new GhostOwner{NetworkId = playerId.Value});
 			}
 

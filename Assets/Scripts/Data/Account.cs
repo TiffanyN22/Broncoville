@@ -2,27 +2,13 @@ using System.IO;
 using System.Text.RegularExpressions;
 using Unity.Collections;
 using Unity.Entities;
+using Unity.NetCode;
 using UnityEngine;
 
 public enum HairStyle
 {
 	STRAIGHT,
 	WAVY
-}
-
-public struct AccountData : IComponentData
-{
-	/// <summary>The account's username.</summary>
-	public FixedString32Bytes name;
-
-	/// <summary>The player's body color.</summary>
-	public int bodyColor;
-
-	/// <summary>The player's hair color.</summary>
-	public int hairColor;
-
-	/// <summary>The player's hair style.</summary>
-	public HairStyle hairStyle;
 }
 
 [System.Serializable]
@@ -35,18 +21,21 @@ public class Account
 	[SerializeField] private string password;
 
 	/// <summary>The account's password.</summary>
-	[SerializeField] private int bodyColor;
+	[SerializeField] private Color bodyColor;
 
 	/// <summary>The account's password.</summary>
-	[SerializeField] private int hairColor;
+	[SerializeField] private Color hairColor;
 
 	/// <summary>The account's password.</summary>
-	[SerializeField] private string hairStyle;
+	[SerializeField] private HairStyle hairStyle;
 
-	public Account(string username, string password)
+	public Account(string username, string password, Color bodyColor, Color hairColor, HairStyle style)
 	{
 		this.username = username;
 		this.password = password;
+		this.bodyColor = bodyColor;
+		this.hairColor = hairColor;
+		this.hairStyle = style;
 	}
 
 	/// <summary>
@@ -67,13 +56,33 @@ public class Account
 		return this.password;
 	}
 
+	public Color GetBodyColor()
+	{
+		return this.bodyColor;
+	}
+
+	public Color GetHairColor()
+	{
+		return this.hairColor;
+	}
+	
+	public HairStyle GetHairStyle()
+	{
+		return this.hairStyle;
+	}
+
 	/// <summary>
 	/// Save the account to a json file. The file will be named after the account's username for easy lookup.
 	/// </summary>
 	public void SaveToFile()
 	{
+		if (!Directory.Exists(GetAccountsDirectory()))
+		{
+			Directory.CreateDirectory(GetAccountsDirectory());
+		}
+
 		string accountJson = JsonUtility.ToJson(this);
-		File.WriteAllText(GetAccountFileName(this.username), accountJson);
+		File.WriteAllText(GetAccountsDirectory() + '/' + GetAccountFileName(this.username), accountJson);
 	}
 
 	/// <summary>
@@ -83,7 +92,12 @@ public class Account
 	/// <returns>A string representation of the json file's path in the system.</returns>
 	public static string GetAccountFileName(string username)
 	{
-		return Application.persistentDataPath + "/" + username + ".json";
+		return username + ".json";
+	}
+
+	public static string GetAccountsDirectory()
+	{
+		return Application.persistentDataPath + "/accounts";
 	}
 
 	/// <summary>
@@ -93,7 +107,7 @@ public class Account
 	/// <returns>True if a file was found, false otherwise.</returns>
 	public static bool HasFile(string username)
 	{
-		return File.Exists(GetAccountFileName(username));
+		return File.Exists(GetAccountsDirectory() + '/' + GetAccountFileName(username));
 	}
 
 	/// <summary>
@@ -108,7 +122,7 @@ public class Account
 			return null;
 		}
 
-		string content = File.ReadAllText(GetAccountFileName(username));
+		string content = File.ReadAllText(GetAccountsDirectory() + '/' + GetAccountFileName(username));
 		return JsonUtility.FromJson<Account>(content);
 	}
 
