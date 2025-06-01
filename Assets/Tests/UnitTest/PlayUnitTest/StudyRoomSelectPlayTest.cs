@@ -1,3 +1,5 @@
+// COMMENTED OUT BECAUSE REMOVED STUDY ROOM SELECTION ASSEMBLY FILE
+/*
 using System.Collections;
 using System.Collections.Generic;
 using NUnit.Framework;
@@ -78,3 +80,4 @@ public class JoinStudyRoomTestScript
         Assert.AreEqual(0, newRoom.roomID, "The added room's room ID is not 0");
     }
 }
+*/
