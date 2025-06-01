@@ -180,6 +180,25 @@ public class Whiteboard : MonoBehaviour, IPointerDownHandler, IDragHandler, IPoi
         pen_script.myColor = saveColor;
     }
 
+    public Texture2D CombineTextures(Texture2D bottomTexture, Texture2D topTexture)
+    {
+        Texture2D newTexture = new Texture2D(width: (int)textureSize.x, height: (int)textureSize.y);
+        // Graphics.CopyTexture(bottomTexture, newTexture);
+        // only works if topTexture and bottomTexture are the same dims
+        for (int x = 0; x < topTexture.width; x++)
+        {
+            for (int y = 0; y < topTexture.height; y++)
+            {
+                Color bottomPixel = bottomTexture.GetPixel(x, y);
+                Color topPixel = topTexture.GetPixel(x, y);
+                newTexture.SetPixel(x, y, Color.Lerp(bottomPixel, topPixel, topPixel.a));
+            }
+        }
+        newTexture.Apply();
+
+        return newTexture;
+    }
+
     public void prepNewTexture() // "save" texture in current slot and move one slot forward
     {
         Debug.Log("prepping new texture...");
@@ -213,17 +232,17 @@ public class Whiteboard : MonoBehaviour, IPointerDownHandler, IDragHandler, IPoi
 
     public void shiftTexturesBack()
     {
-        for (int i = 0; i < textures.Length - 1; i++)
+        Graphics.CopyTexture(CombineTextures(textures[0], textures[1]), textures[0]); // merge textures in back
+        for (int i = 1; i < textures.Length - 1; i++) // shift textures (excluding first/back) back 
         {
             Graphics.CopyTexture(textures[i + 1], textures[i]); // texures[i] = textures[i+1].copy
-            whiteboardLayerArr[i].GetComponent<Image>().sprite = Sprite.Create(Instantiate(textures[i]), new Rect(0, 0, (int)textureSize.x, (int)textureSize.y), Vector2.zero, 100, 0, SpriteMeshType.FullRect, Vector4.zero, false, null);
             Debug.Log("texture " + i + " becomes texture " + (i + 1));
         }
     }
 
     public void debugButton()
     {
-        drawABlock(0);
+        Graphics.CopyTexture(CombineTextures(textures[0], textures[1]), textures[2]);
     }
 
     public void undoTexture()
@@ -246,11 +265,6 @@ public class Whiteboard : MonoBehaviour, IPointerDownHandler, IDragHandler, IPoi
 
         whiteboardLayerArr[currentIndex].GetComponent<Image>().sprite = Sprite.Create(textures[currentIndex], new Rect(0, 0, (int)textureSize.x, (int)textureSize.y), Vector2.zero, 100, 0, SpriteMeshType.FullRect, Vector4.zero, false, null);
         Debug.Log("undo. current texture: " + currentIndex);
-    }
-
-    public void combineTextures(Texture2D topTexture, Texture2D bottomTexture)
-    {
-
     }
 
     public void redoTexture()
