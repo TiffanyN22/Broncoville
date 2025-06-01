@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,6 +9,7 @@ using Unity.Entities;
 using Unity.NetCode;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine;
 
 public class ManageHelpItems : MonoBehaviour
 {
@@ -62,11 +64,19 @@ public class ManageHelpItems : MonoBehaviour
         if ((addItemTitleInput.text != "") && (addItemDescriptionInput.text != "")){
             HelpDetailsInfo newHelpItem = new HelpDetailsInfo(addItemTitleInput.text , username, addItemDescriptionInput.text);
 
-            // Create
+            // Create item rpc
             EntityManager clientManager = FindFirstObjectByType<ClientManager>().GetEntityManager();
             Entity createHelpItemRequest = clientManager.CreateEntity(typeof(CreateHelpItemRequestRpc), typeof(SendRpcCommandRequest));
-            clientManager.SetComponentData(createHelpItemRequest, new CreateHelpItemRequestRpc{topic = addItemTitleInput.text, requester = username, numHelpBoardEntries = 1});
+            string newGuid = newHelpItem.guid.ToString();
+            clientManager.SetComponentData(createHelpItemRequest, new CreateHelpItemRequestRpc{topic = addItemTitleInput.text, requester = username, numHelpBoardEntries = 1, guid = newGuid});
 
+            // Create description rpc
+            int descriptionLength = addItemDescriptionInput.text.Length;
+            for (int j = 0; j < descriptionLength; j += 125)
+            {
+                Entity createHelpDescriptionRequest = clientManager.CreateEntity(typeof(CreateHelpDescriptionRequestRpc), typeof(SendRpcCommandRequest));
+                clientManager.SetComponentData(createHelpDescriptionRequest, new CreateHelpDescriptionRequestRpc{descriptionNumPackets = descriptionLength / 125 + 1,  index = j, guid = newGuid, description = addItemDescriptionInput.text.Substring(j, Math.Min(descriptionLength - j, 125))});
+            }
             myHelpItems.Add(newHelpItem);
             ClickedCloseAddItem();
         }

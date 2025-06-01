@@ -40,7 +40,22 @@ public class HelpBoardEntryList : MonoBehaviour
       newInfo.guid = Guid.NewGuid();
     }
     allHelpItemsList.Add(newInfo);
-    allHelpItems.Add(newInfo.guid, newInfo);
+
+    if (!allHelpItems.ContainsKey(newInfo.guid))
+    {
+      allHelpItems.Add(newInfo.guid, newInfo);
+    }
+    else
+    {
+      allHelpItems[newInfo.guid] = newInfo;
+    }
+  }
+
+  public void updateDescription(Guid guid, string description)
+  {
+    allHelpItems[guid].description = description;
+    HelpDetailsInfo itemInList = allHelpItemsList.Find(item => item.guid == guid);
+    itemInList.description = description; 
   }
     // TODO: set/edit functions
 }
