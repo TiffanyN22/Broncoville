@@ -50,7 +50,6 @@ public class StudyRoomSelection : MonoBehaviour
         {
             StudyRoomSelectEntryRpc response = entities.GetComponentData<StudyRoomSelectEntryRpc>(entity);
 
-
             bool isPublic = response.isPublic;
             string roomName = response.roomName.ToString();
             int room4NumID = response.room4NumID;
@@ -91,6 +90,7 @@ public class StudyRoomSelection : MonoBehaviour
 
     public void selectJoinRoomMode()
     {
+        refreshRoomListFromServer();
         if (joinRoomObject != null && !joinRoomObject.activeSelf) joinRoomObject.SetActive(true);
         if (createRoomObject != null && createRoomObject.activeSelf) createRoomObject.SetActive(false);
     }
@@ -100,17 +100,27 @@ public class StudyRoomSelection : MonoBehaviour
         if (createRoomObject != null && !createRoomObject.activeSelf) createRoomObject.SetActive(true);
     }
 
-    public void createRoom(){
+    public void createRoom()
+    {
         // note: assumes allRooms is stored in order of roomID
         // TODO: generate random id instead of just using next id
-        // TODO: input validation
-        if (createRoomNameInput.text == ""){
+        if (createRoomNameInput.text == "" || createRoomNameInput.text.Length > 125)
+        {
             return;
         }
         int newRoomId = ((allRooms.Count - 1) >= 0) ? allRooms[allRooms.Count - 1].room4NumID + 1 : 0;
         OpenRoom newRoom = new OpenRoom(createRoomPrivate, createRoomNameInput.text, newRoomId, Guid.NewGuid());
-        allRooms.Add(newRoom);
-        AddRoomToScrollView(newRoom);
+
+        // Update Server
+        EntityManager clientManager = FindFirstObjectByType<ClientManager>().GetEntityManager();
+        Entity createStudyRoomRequest = clientManager.CreateEntity(typeof(CreateStudyRoomSelectRpc), typeof(SendRpcCommandRequest));
+        string newGuid = newRoom.roomGuid.ToString();
+        clientManager.SetComponentData(createStudyRoomRequest, new CreateStudyRoomSelectRpc { isPublic = createRoomPrivate, roomName = createRoomNameInput.text, room4NumID = newRoomId, roomGuid = newGuid });
+        // allRooms.Add(newRoom);
+        // AddRoomToScrollView(newRoom);
+
+        createRoomNameInput.text = "";
+
         // TODO: change user to that room
         // TODO: if private, let them know what study room ID is once they enter
     }
