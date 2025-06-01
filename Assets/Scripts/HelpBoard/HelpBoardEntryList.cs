@@ -55,7 +55,13 @@ public class HelpBoardEntryList : MonoBehaviour
   {
     allHelpItems[guid].description = description;
     HelpDetailsInfo itemInList = allHelpItemsList.Find(item => item.guid == guid);
-    itemInList.description = description; 
+    itemInList.description = description;
   }
-    // TODO: set/edit functions
+
+  public void deleteItem(Guid guid)
+  {
+    allHelpItems.Remove(guid);
+    HelpDetailsInfo itemInList = allHelpItemsList.Find(item => item.guid == guid);
+    allHelpItemsList.Remove(itemInList);
+  }
 }

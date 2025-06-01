@@ -31,25 +31,28 @@ public class ManageHelpItems : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 
-    public void CloseHelpBoard(){
-        if(helpBoardGroup != null) helpBoardGroup.SetActive(false);
+    public void CloseHelpBoard()
+    {
+        if (helpBoardGroup != null) helpBoardGroup.SetActive(false);
     }
 
-    public void ClickedAddItemPanel(){
+    public void ClickedAddItemPanel()
+    {
         if (addHelpItemGroup != null && !addHelpItemGroup.activeSelf) addHelpItemGroup.SetActive(true);
         if (myHelpItemsGroup != null && myHelpItemsGroup.activeSelf) myHelpItemsGroup.SetActive(false);
     }
 
-    public void ClickedCloseAddItem(){
+    public void ClickedCloseAddItem()
+    {
         if (addHelpItemGroup != null && addHelpItemGroup.activeSelf) addHelpItemGroup.SetActive(false);
         // if (helpListGroup != null && !helpListGroup.activeSelf) helpListGroup.SetActive(true);
 
@@ -60,42 +63,47 @@ public class ManageHelpItems : MonoBehaviour
         addItemDescriptionInput.text = "";
     }
 
-    public void ClickedAddItem(){
-        if ((addItemTitleInput.text != "") && (addItemDescriptionInput.text != "")){
-            HelpDetailsInfo newHelpItem = new HelpDetailsInfo(addItemTitleInput.text , username, addItemDescriptionInput.text);
+    public void ClickedAddItem()
+    {
+        if ((addItemTitleInput.text != "") && (addItemDescriptionInput.text != ""))
+        {
+            HelpDetailsInfo newHelpItem = new HelpDetailsInfo(addItemTitleInput.text, username, addItemDescriptionInput.text);
 
             // Create item rpc
             EntityManager clientManager = FindFirstObjectByType<ClientManager>().GetEntityManager();
             Entity createHelpItemRequest = clientManager.CreateEntity(typeof(CreateHelpItemRequestRpc), typeof(SendRpcCommandRequest));
             string newGuid = newHelpItem.guid.ToString();
-            clientManager.SetComponentData(createHelpItemRequest, new CreateHelpItemRequestRpc{topic = addItemTitleInput.text, requester = username, numHelpBoardEntries = 1, guid = newGuid});
+            clientManager.SetComponentData(createHelpItemRequest, new CreateHelpItemRequestRpc { topic = addItemTitleInput.text, requester = username, numHelpBoardEntries = 1, guid = newGuid });
 
             // Create description rpc
             int descriptionLength = addItemDescriptionInput.text.Length;
             for (int j = 0; j < descriptionLength; j += 125)
             {
                 Entity createHelpDescriptionRequest = clientManager.CreateEntity(typeof(CreateHelpDescriptionRequestRpc), typeof(SendRpcCommandRequest));
-                clientManager.SetComponentData(createHelpDescriptionRequest, new CreateHelpDescriptionRequestRpc{descriptionNumPackets = descriptionLength / 125 + 1,  index = j, guid = newGuid, description = addItemDescriptionInput.text.Substring(j, Math.Min(descriptionLength - j, 125))});
+                clientManager.SetComponentData(createHelpDescriptionRequest, new CreateHelpDescriptionRequestRpc { descriptionNumPackets = descriptionLength / 125 + 1, index = j, guid = newGuid, description = addItemDescriptionInput.text.Substring(j, Math.Min(descriptionLength - j, 125)) });
             }
             myHelpItems.Add(newHelpItem);
             ClickedCloseAddItem();
         }
     }
 
-    public void ClickedViewMyItems(){
+    public void ClickedViewMyItems()
+    {
         if (helpListGroup != null && helpListGroup.activeSelf) helpListGroup.SetActive(false);
         if (myHelpItemsGroup != null && !myHelpItemsGroup.activeSelf) myHelpItemsGroup.SetActive(true);
         myHelpItems = helpBoard.GetAllHelpItems().Where(h => h.requester == username).ToList();
         showMyHelpItems();
     }
 
-    public void ClickedClosedMyItems(){
+    public void ClickedClosedMyItems()
+    {
         if (helpListGroup != null && !helpListGroup.activeSelf) helpListGroup.SetActive(true);
         if (myHelpItemsGroup != null && myHelpItemsGroup.activeSelf) myHelpItemsGroup.SetActive(false);
         helpBoard.refreshHelpDetails();
     }
 
-    public void showMyHelpItems() {
+    public void showMyHelpItems()
+    {
         // delete previous items
         foreach (Transform child in myHelpListContent)
         {
@@ -103,7 +111,8 @@ public class ManageHelpItems : MonoBehaviour
         }
 
         // add new items
-        foreach(HelpDetailsInfo curItem in myHelpItems){
+        foreach (HelpDetailsInfo curItem in myHelpItems)
+        {
             AddMyItemToScrollview(curItem);
         }
     }
@@ -112,9 +121,15 @@ public class ManageHelpItems : MonoBehaviour
     {
         GameObject helpItemObject = Instantiate(myHelpItemsPrefab, myHelpListContent);
         MyHelpBoardItem helpItem = helpItemObject.GetComponent<MyHelpBoardItem>();
-        helpItem.SetInfo(newItem.topic, username);
+        helpItem.SetInfo(newItem.topic, username, newItem.guid);
         helpItem.SetAllHelpItems(helpBoard.GetAllHelpItems().ToList());
         helpItem.SetManageHelpItems(this);
         helpItem.transform.localScale = Vector3.one;
+    }
+
+    public void DeleteMyHelpItems(Guid guid)
+    {
+        HelpDetailsInfo itemToDelete = myHelpItems.Find(curItem => curItem.guid == guid);
+        myHelpItems.Remove(itemToDelete);
     }
 }
