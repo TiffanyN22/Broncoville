@@ -248,22 +248,26 @@ public class Whiteboard : MonoBehaviour, IPointerDownHandler, IDragHandler, IPoi
 
     public void undoTexture()
     {
-        // rename old texture
-        whiteboardLayerArr[currentIndex].name = "edited layer " + (currentIndex);
-        whiteboardLayerArr[currentIndex].SetActive(false);
-        // if we're looking at a blank layer and we undo, it goes back 2 layers instead of 1
-        if ((currentIndex == whiteboardLayerArr.Length - 1) || currentIndex >= 2 && currentIndex < (whiteboardLayerArr.Length - 2) && whiteboardLayerArr[currentIndex + 1].name.Contains("blank")){
-            whiteboardLayerArr[currentIndex - 1].SetActive(false);
-            currentIndex--;
-            Debug.Log("blank layer ahead. showing ");
-        }
-        if (currentIndex >= 1)
+        if(currentIndex != 0)
         {
-            currentIndex--;
-        }
+            // rename old texture
+            whiteboardLayerArr[currentIndex].name = "edited layer " + (currentIndex);
+            whiteboardLayerArr[currentIndex].SetActive(false);
+            // if we're looking at a blank layer and we undo, it goes back 2 layers instead of 1
+            if ((currentIndex == whiteboardLayerArr.Length - 1) || currentIndex >= 2 && currentIndex < (whiteboardLayerArr.Length - 2) && whiteboardLayerArr[currentIndex + 1].name.Contains("blank"))
+            {
+                whiteboardLayerArr[currentIndex - 1].SetActive(false);
+                currentIndex--;
+                Debug.Log("blank layer ahead. showing ");
+            }
+            if (currentIndex >= 1)
+            {
+                currentIndex--;
+            }
 
-        // rename new texture
-        whiteboardLayerArr[currentIndex].name = "current layer " + (currentIndex) + " (you're looking at this one!)";
+            // rename new texture
+            whiteboardLayerArr[currentIndex].name = "current layer " + (currentIndex) + " (you're looking at this one!)";
+        }
 
         Debug.Log("undo. current texture: " + currentIndex);
     }
