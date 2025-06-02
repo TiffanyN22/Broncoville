@@ -1,7 +1,11 @@
-using UnityEngine;
-using UnityEngine.UI;
+using System.Collections;
+using System.Collections.Generic;
+using System;
 using TMPro;
-
+using UnityEngine;
+using Unity.Entities;
+using Unity.NetCode;
+using Unity.Collections;
 public class Messaging : MonoBehaviour
 {
   string username = "Tiffany"; // TODO: get username
@@ -23,8 +27,14 @@ public class Messaging : MonoBehaviour
       inputField.textComponent.color = Color.red;
       return;
     }
-    GameObject newText = Instantiate(textItemPrefab, messagesScrollViewContent);
-    newText.GetComponentInChildren<TMP_Text>().text = $"[{username}]: {message}";
+    string fullMessage = $"[{username}]: {message}";
+
+    // Send message to server
+     EntityManager clientManager = FindFirstObjectByType<ClientManager>().GetEntityManager();
+    Entity sendMessageEntity = clientManager.CreateEntity(typeof(MessagingSendMessageRpc), typeof(SendRpcCommandRequest));
+    clientManager.SetComponentData(sendMessageEntity, new MessagingSendMessageRpc { message = fullMessage });
+
+
     inputField.textComponent.color = Color.white;
     inputField.text = "";
   }
@@ -34,8 +44,11 @@ public class Messaging : MonoBehaviour
     messageDisplayGroup.SetActive(display);
     noMessageDisplayGroup.SetActive(!display);
   }
-  
-  void Update()
+
+  public void AddMessage(string message)
   {
+    // Debug.Log("Adding message " + message);
+    GameObject newText = Instantiate(textItemPrefab, messagesScrollViewContent);
+    newText.GetComponentInChildren<TMP_Text>().text = message;
   }
 }

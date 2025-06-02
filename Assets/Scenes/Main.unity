@@ -2169,7 +2169,7 @@ RectTransform:
   m_LocalScale: {x: 1.92, y: 1.92, z: 1.92}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 853013458}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -3617,7 +3617,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1606903775}
         m_TargetAssemblyTypeName: Messaging, Scripts
-        m_MethodName: updateMessageDisplay
+        m_MethodName: UpdateMessageDisplay
         m_Mode: 6
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -5889,7 +5889,9 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 2116208058}
+  - {fileID: 306312821}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &853013459
@@ -7268,7 +7270,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1606903775}
         m_TargetAssemblyTypeName: Messaging, Scripts
-        m_MethodName: updateMessageDisplay
+        m_MethodName: UpdateMessageDisplay
         m_Mode: 6
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -13990,7 +13992,7 @@ RectTransform:
   m_LocalScale: {x: 1.92, y: 1.92, z: 1.92}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 853013458}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -14145,8 +14147,6 @@ SceneRoots:
   - {fileID: 864577333}
   - {fileID: 1954425243}
   - {fileID: 853013458}
-  - {fileID: 2116208058}
-  - {fileID: 306312821}
   - {fileID: 1854355196}
   - {fileID: 1158925300}
   - {fileID: 187161430}
