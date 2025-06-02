@@ -1,5 +1,4 @@
 using TMPro;
-using Unity.Collections;
 using Unity.Entities;
 using Unity.NetCode;
 using UnityEngine;
@@ -45,37 +44,6 @@ public class CreateAccountUIController : UIBase
 		this.cancelButton.onClick.AddListener(this.Back);
 	}
 
-	public void Update()
-	{
-		// Update is only used for networking, so return if not waiting for a response.
-		if(this.loadingScreen == null)
-		{
-			return;
-		}
-		
-		// Check for entities containing the create account response message.
-		EntityManager entities = FindFirstObjectByType<ClientManager>().GetEntityManager();
-		EntityQuery connections = entities.CreateEntityQuery(ComponentType.ReadOnly<CreateAccountResponseRpc>());
-	
-		// If a create account response was found, go back to the log in screen or show an error.
-		foreach(Entity entity in connections.ToEntityArray(Allocator.Temp))
-		{
-			CreateAccountResponseRpc response = entities.GetComponentData<CreateAccountResponseRpc>(entity);
-			
-			if(response.accepted)
-			{
-				this.Back();
-			}
-			else
-			{
-				this.errorMessage.SetText(response.reason.ToString());
-			}
-
-			Destroy(this.loadingScreen.gameObject);
-			entities.DestroyEntity(entity);
-		}
-	}
-
 	/// <summary>
 	/// Verify the username and password fields and send a create account request to the server.
 	/// </summary>
@@ -113,5 +81,25 @@ public class CreateAccountUIController : UIBase
 		EntityManager clientManager = FindFirstObjectByType<ClientManager>().GetEntityManager();
 		Entity createAccountRequest = clientManager.CreateEntity(typeof(CreateAccountRequestRpc), typeof(SendRpcCommandRequest));
 		clientManager.SetComponentData(createAccountRequest, new CreateAccountRequestRpc{username = this.usernameField.text, password = this.passwordField.text});
+	}
+
+	/// <summary>
+	/// Handle the create account response from the server. This should only be called by 
+	/// the create account system. Calling it elsewhere may lead to a client-server desync.
+	/// </summary>
+	/// <param name="success">Whether or not the account creation wsa successful.</param>
+	/// <param name="reason">The reason why the account creation failed.</param>
+	public void CreateAccount(bool success, string reason)
+	{
+		Destroy(this.loadingScreen.gameObject);
+
+		if(success)
+		{
+			this.Back();
+		}
+		else
+		{
+			this.errorMessage.SetText(reason);
+		}
 	}
 }

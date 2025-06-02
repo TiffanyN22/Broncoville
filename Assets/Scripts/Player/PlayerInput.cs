@@ -6,7 +6,7 @@ using UnityEngine;
 public struct PlayerInputData : IInputComponentData
 {
 	/// <summary>The player's movement direction.</summary>
-	public float2 movement;
+	[GhostField] public float2 movement;
 }
 
 [DisallowMultipleComponent]

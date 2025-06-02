@@ -8,7 +8,7 @@ public struct GoInGameRpc : IRpcCommand
 }
 
 [WorldSystemFilter(WorldSystemFilterFlags.ClientSimulation | WorldSystemFilterFlags.ThinClientSimulation)]
-public partial struct ClientInGameSystem : ISystem
+public partial struct ClientGoInGameSystem : ISystem
 {
 	public void OnCreate(ref SystemState state)
 	{
@@ -21,16 +21,14 @@ public partial struct ClientInGameSystem : ISystem
 	{
 		EntityCommandBuffer commandBuffer = new EntityCommandBuffer(Allocator.Temp);
 
-		// Get all unprocessed go in game requests and iterate through them all.
+		// Find the client's network id and add the in-game component.
 		foreach((RefRO<GoInGameRpc> _, Entity entity) in SystemAPI.Query<RefRO<GoInGameRpc>>().WithEntityAccess())
 		{
-			// Get the current connection's network id and add the in-game component.
 			foreach((RefRO<NetworkId> _, Entity id) in SystemAPI.Query<RefRO<NetworkId>>().WithEntityAccess())
 			{
 				commandBuffer.AddComponent<NetworkStreamInGame>(id);
 			}
 			
-			// Destroy the message now that it has been processed.
 			commandBuffer.DestroyEntity(entity);
 		}
 

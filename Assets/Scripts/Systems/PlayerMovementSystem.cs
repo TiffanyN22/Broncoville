@@ -16,6 +16,7 @@ public partial struct PlayerMovementSystem : ISystem
 
 			// Move the player.
 			transform.ValueRW.Position += new float3(safeInput.x * SystemAPI.Time.DeltaTime * 2f, safeInput.y * SystemAPI.Time.DeltaTime * 2f, 0f);
+			transform.ValueRW.Position = new float3(transform.ValueRW.Position.x, transform.ValueRW.Position.y, transform.ValueRW.Position.y);
 		}
 	}
 }

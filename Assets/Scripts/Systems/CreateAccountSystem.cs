@@ -79,3 +79,38 @@ public partial struct ServerCreateAccountSystem : ISystem
 		commandBuffer.Dispose();
 	}
 }
+
+[WorldSystemFilter(WorldSystemFilterFlags.ClientSimulation | WorldSystemFilterFlags.ThinClientSimulation)]
+public partial struct ClientCreateAccountSystem : ISystem
+{
+	public void OnCreate(ref SystemState state)
+	{
+		EntityQueryBuilder builder = new EntityQueryBuilder(Allocator.Temp).WithAll<CreateAccountResponseRpc, ReceiveRpcCommandRequest>();
+		state.RequireForUpdate(state.GetEntityQuery(builder));
+	}
+
+	public void OnUpdate(ref SystemState state)
+	{
+		EntityCommandBuffer commandBuffer = new EntityCommandBuffer(Allocator.Temp);
+
+		// Update the create account UI upon recieving a response from the server.
+		foreach((RefRO<CreateAccountResponseRpc> createAccount, RefRO<ReceiveRpcCommandRequest> request, Entity entity) in SystemAPI.Query<RefRO<CreateAccountResponseRpc>, RefRO<ReceiveRpcCommandRequest>>().WithEntityAccess())
+		{
+			CreateAccountUIController createAccountUI = Object.FindFirstObjectByType<CreateAccountUIController>();
+
+			if(createAccountUI == null)
+			{
+				Debug.Log("Client Create Account System: Failed to find the create account UI.");
+			}
+			else
+			{
+				createAccountUI.CreateAccount(createAccount.ValueRO.accepted, createAccount.ValueRO.reason.ToString());
+			}
+			
+			commandBuffer.DestroyEntity(entity);
+		}
+
+		commandBuffer.Playback(state.EntityManager);
+		commandBuffer.Dispose();
+	}
+}

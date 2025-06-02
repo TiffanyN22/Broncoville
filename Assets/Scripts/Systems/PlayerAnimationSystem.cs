@@ -1,17 +1,51 @@
 using Unity.Collections;
 using Unity.Entities;
 using Unity.Rendering;
-using Unity.Transforms;
-using UnityEditor.Animations;
 using UnityEngine;
 
+public struct PlayerAnimation : IComponentData
+{
+	public float nextFrame;
+	public int frame;
+}
+
+[MaterialProperty("FrameNumber")]
+public struct MaterialOverrideFrameNumber : IComponentData
+{
+	public float frameNumber;
+}
+
+[MaterialProperty("BodyColor")]
+public struct MaterialOverrideBodyColor : IComponentData
+{
+	public Color bodyColor;
+}
+
+[MaterialProperty("HairColor")]
+public struct MaterialOverrideHairColor : IComponentData
+{
+	public Color hairColor;
+}
+
+[MaterialProperty("FlipDirection")]
+public struct MaterialOverrideFlipDirection : IComponentData
+{
+	public float flipDirection;
+}
+
+[MaterialProperty("HairStyle")]
+public struct MaterialOverrideHairStyle : IComponentData
+{
+	public float hairStyle;
+}
+
 [WorldSystemFilter(WorldSystemFilterFlags.ClientSimulation | WorldSystemFilterFlags.ThinClientSimulation)]
-public partial struct PlayerAnimationSystem : ISystem
+public partial struct ClientPlayerAnimationSystem : ISystem
 {
 	public void OnCreate(ref SystemState state)
 	{
 		// Only run this system if the client is connected but not in game.
-		EntityQueryBuilder builder = new EntityQueryBuilder(Allocator.Temp).WithAll<PlayerData, AccountData, PlayerInputData, MaterialMeshInfo>();
+		EntityQueryBuilder builder = new EntityQueryBuilder(Allocator.Temp).WithAll<AccountData, PlayerAnimation, PlayerInputData, MaterialOverrideFrameNumber>();
 		state.RequireForUpdate(state.GetEntityQuery(builder));
 	}
 
@@ -20,49 +54,56 @@ public partial struct PlayerAnimationSystem : ISystem
 		EntityCommandBuffer commandBuffer = new EntityCommandBuffer(Allocator.Temp);
 		EntityManager entities = GameObject.FindFirstObjectByType<ClientManager>().GetEntityManager();
 
-		foreach((RefRW<PlayerData> player, RefRO<AccountData> account, RefRO<PlayerInputData> input, RefRO<MaterialMeshInfo> meshInfo, Entity entity) in SystemAPI.Query<RefRW<PlayerData>, RefRO<AccountData>, RefRO<PlayerInputData>, RefRO<MaterialMeshInfo>>().WithEntityAccess())
+		foreach((RefRO<AccountData> account, RefRW<PlayerAnimation> animation, RefRO<PlayerInputData> input, RefRW<MaterialOverrideFrameNumber> frame, Entity entity) in SystemAPI.Query<RefRO<AccountData>, RefRW<PlayerAnimation>, RefRO<PlayerInputData>, RefRW<MaterialOverrideFrameNumber>>().WithEntityAccess())
 		{
-			RenderMeshArray meshes = entities.GetSharedComponentManaged<RenderMeshArray>(entity);
-			Material bodyMaterial = meshes.GetMaterial(meshInfo.ValueRO);
+			entities.SetComponentData(entity, new MaterialOverrideBodyColor{bodyColor = account.ValueRO.bodyColor});
+			entities.SetComponentData(entity, new MaterialOverrideHairColor{hairColor = account.ValueRO.hairColor});
+			entities.SetComponentData(entity, new MaterialOverrideHairStyle{hairStyle = (int) account.ValueRO.hairStyle});
 
-			DynamicBuffer<Child> hair = entities.GetBuffer<Child>(entity);
-			meshes = entities.GetSharedComponentManaged<RenderMeshArray>(hair[0].Value);
-			Material hairMaterial = meshes.GetMaterial(entities.GetComponentData<MaterialMeshInfo>(hair[0].Value));
-			
-			bodyMaterial.color = account.ValueRO.bodyColor;
-			hairMaterial.color = account.ValueRO.hairColor;
-
-			if (input.ValueRO.movement.x < 0)
+			if(input.ValueRO.movement.x != 0f)
 			{
-				bodyMaterial.mainTextureScale = new Vector2(-1f, 0.125f);
-				hairMaterial.mainTextureScale = new Vector2(-1f, 0.125f);
-			}
-			else if (input.ValueRO.movement.x > 0)
-			{
-				bodyMaterial.mainTextureScale = new Vector2(1f, 0.125f);
-				hairMaterial.mainTextureScale = new Vector2(1f, 0.125f);
-			}
-			else if (bodyMaterial.mainTextureScale.y != 0.125f)
-			{
-				bodyMaterial.mainTextureScale = new Vector2(1f, 0.125f);
-				hairMaterial.mainTextureScale = new Vector2(1f, 0.125f);
+				commandBuffer.SetComponent(entity, new MaterialOverrideFlipDirection{flipDirection = input.ValueRO.movement.x < 0f ? 1f : 0f});
 			}
 
 			if(input.ValueRO.movement.x == 0 && input.ValueRO.movement.y == 0)
 			{
-				bodyMaterial.mainTextureOffset = new Vector2(bodyMaterial.mainTextureScale.x == -1f ? 1f : 0f, 0.875f);
-				hairMaterial.mainTextureOffset = new Vector2(hairMaterial.mainTextureScale.x == -1f ? 1f : 0f, 0.875f);
-				player.ValueRW.nextFrameTime = 0;
-				player.ValueRW.frame = 0;
+				frame.ValueRW.frameNumber = 0;
 			}
-			else if((player.ValueRW.nextFrameTime -= Time.deltaTime) <= 0)
+			else if((animation.ValueRW.nextFrame -= Time.deltaTime) <= 0)
 			{
-				bodyMaterial.mainTextureOffset = new Vector2(bodyMaterial.mainTextureScale.x == -1f ? 1f : 0f, 0.75f - 0.125f * player.ValueRO.frame);
-				hairMaterial.mainTextureOffset = new Vector2(hairMaterial.mainTextureScale.x == -1f ? 1f : 0f, 0.75f - 0.125f * player.ValueRO.frame);
-				++player.ValueRW.frame;
-				player.ValueRW.frame %= 6;
-				player.ValueRW.nextFrameTime = 0.125f;
+				++frame.ValueRW.frameNumber;
+				frame.ValueRW.frameNumber %= 6;
+				animation.ValueRW.nextFrame = 0.125f;
 			}
+		}
+
+		commandBuffer.Playback(state.EntityManager);
+		commandBuffer.Dispose();
+	}
+}
+
+[WorldSystemFilter(WorldSystemFilterFlags.ClientSimulation | WorldSystemFilterFlags.ThinClientSimulation)]
+public partial struct ClientSetupPlayerAnimationSystem : ISystem
+{
+	public void OnCreate(ref SystemState state)
+	{
+		// Only run this system if the client is connected but not in game.
+		EntityQueryBuilder builder = new EntityQueryBuilder(Allocator.Temp).WithAll<AccountData>().WithNone<PlayerAnimation>();
+		state.RequireForUpdate(state.GetEntityQuery(builder));
+	}
+
+	public void OnUpdate(ref SystemState state)
+	{
+		EntityCommandBuffer commandBuffer = new EntityCommandBuffer(Allocator.Temp);
+
+		foreach((RefRO<AccountData> _, Entity entity) in SystemAPI.Query<RefRO<AccountData>>().WithNone<PlayerAnimation>().WithEntityAccess())
+		{
+			commandBuffer.AddComponent<PlayerAnimation>(entity);
+			commandBuffer.AddComponent<MaterialOverrideFrameNumber>(entity);
+			commandBuffer.AddComponent<MaterialOverrideBodyColor>(entity);
+			commandBuffer.AddComponent<MaterialOverrideHairColor>(entity);
+			commandBuffer.AddComponent<MaterialOverrideFlipDirection>(entity);
+			commandBuffer.AddComponent<MaterialOverrideHairStyle>(entity);
 		}
 
 		commandBuffer.Playback(state.EntityManager);

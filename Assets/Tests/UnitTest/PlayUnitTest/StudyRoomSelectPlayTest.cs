@@ -16,7 +16,7 @@ public class JoinStudyRoomTestScript
         yield return new WaitForSeconds(0.1f);
 
         // find StudyRoomSelection in the scene
-        var selection = GameObject.FindObjectOfType<StudyRoomSelection>();
+        var selection = Object.FindFirstObjectByType<StudyRoomSelection>();
         Assert.IsNotNull(selection, "StudyRoomSelection not found in scene.");
 
         // test createRoom doesn't't add element becuase it has no input field
@@ -33,7 +33,7 @@ public class JoinStudyRoomTestScript
         yield return new WaitForSeconds(0.1f); 
 
         // find StudyRoomSelection in the scene
-        var selection = GameObject.FindObjectOfType<StudyRoomSelection>();
+        var selection = Object.FindFirstObjectByType<StudyRoomSelection>();
         Assert.IsNotNull(selection, "StudyRoomSelection not found in scene.");
 
         // add new room to input field
@@ -57,7 +57,7 @@ public class JoinStudyRoomTestScript
         yield return new WaitForSeconds(0.1f); 
 
         // find StudyRoomSelection in the scene
-        var selection = GameObject.FindObjectOfType<StudyRoomSelection>();
+        var selection = Object.FindFirstObjectByType<StudyRoomSelection>();
         Assert.IsNotNull(selection, "StudyRoomSelection not found in scene.");
 
         // delete existing rooms, check it actually deleted

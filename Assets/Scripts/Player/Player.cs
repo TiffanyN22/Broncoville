@@ -3,8 +3,7 @@ using UnityEngine;
 
 public struct PlayerData : IComponentData
 {
-	public float nextFrameTime;
-	public int frame;
+	// You hear wind whistling through these braces.
 }
 
 [DisallowMultipleComponent]

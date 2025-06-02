@@ -30,7 +30,7 @@ public partial struct ServerLoginSystem : ISystem
 	public void OnCreate(ref SystemState state)
 	{
 		// Only run this system if log in requests are available.
-		EntityQueryBuilder builder = new EntityQueryBuilder(Allocator.Temp).WithAll<LoginRequestRpc>().WithAll<ReceiveRpcCommandRequest>();
+		EntityQueryBuilder builder = new EntityQueryBuilder(Allocator.Temp).WithAll<LoginRequestRpc, ReceiveRpcCommandRequest>();
 		state.RequireForUpdate(state.GetEntityQuery(builder));
 
 		// Get a redonly component lookup for network ids.
@@ -99,19 +99,54 @@ public partial struct ServerLoginSystem : ISystem
 				// Send a message to the client telling to load the main hub sub scene.
 				Entity loadMainHub = commandBuffer.CreateEntity();
 
-				commandBuffer.AddComponent(loadMainHub, new LoadSceneRpc{subsceneHash = GameObject.FindFirstObjectByType<SubSceneManager>().GetMainHubGUID()});
+				commandBuffer.AddComponent(loadMainHub, new LoadSceneRpc{subsceneHash = Object.FindFirstObjectByType<SubSceneManager>().GetMainHubGUID()});
 				commandBuffer.AddComponent(loadMainHub, new SendRpcCommandRequest{TargetConnection = request.ValueRO.SourceConnection});
 
 				// Spawn the player in the world and set it's owner to the newly signed in client.
 				MainHubSpawnerData spawner = SystemAPI.GetSingleton<MainHubSpawnerData>();
 				Entity newPlayer = commandBuffer.Instantiate(spawner.player);
 				NetworkId playerId = this.clients[request.ValueRO.SourceConnection];
-				
-				commandBuffer.AddComponent(newPlayer, new AccountData{name = account.GetUsername(), bodyColor = account.GetBodyColor(), hairColor = account.GetHairColor(), hairStyle = account.GetHairStyle()});
+
+				commandBuffer.SetComponent(newPlayer, new AccountData{name = account.GetUsername(), bodyColor = account.GetBodyColor(), hairColor = account.GetHairColor(), hairStyle = account.GetHairStyle()});
 				commandBuffer.SetComponent(newPlayer, new GhostOwner{NetworkId = playerId.Value});
 			}
 
 			// Destroy the message now that it has been processed.
+			commandBuffer.DestroyEntity(entity);
+		}
+
+		commandBuffer.Playback(state.EntityManager);
+		commandBuffer.Dispose();
+	}
+}
+
+[WorldSystemFilter(WorldSystemFilterFlags.ClientSimulation | WorldSystemFilterFlags.ThinClientSimulation)]
+public partial struct ClientLoginSystem : ISystem
+{
+	public void OnCreate(ref SystemState state)
+	{
+		EntityQueryBuilder builder = new EntityQueryBuilder(Allocator.Temp).WithAll<LoginResponseRpc, ReceiveRpcCommandRequest>();
+		state.RequireForUpdate(state.GetEntityQuery(builder));
+	}
+
+	public void OnUpdate(ref SystemState state)
+	{
+		EntityCommandBuffer commandBuffer = new EntityCommandBuffer(Allocator.Temp);
+
+		// Update the login UI upon recieving a response from the server.
+		foreach((RefRO<LoginResponseRpc> login, RefRO<ReceiveRpcCommandRequest> request, Entity entity) in SystemAPI.Query<RefRO<LoginResponseRpc>, RefRO<ReceiveRpcCommandRequest>>().WithEntityAccess())
+		{
+			LoginUIController loginUI = Object.FindFirstObjectByType<LoginUIController>();
+
+			if(loginUI == null)
+			{
+				Debug.Log("Client Login System: Failed to find the login UI.");
+			}
+			else
+			{
+				loginUI.Login(login.ValueRO.accepted, login.ValueRO.reason.ToString());
+			}
+			
 			commandBuffer.DestroyEntity(entity);
 		}
 
