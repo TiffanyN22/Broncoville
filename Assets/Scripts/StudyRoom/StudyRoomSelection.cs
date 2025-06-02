@@ -10,12 +10,14 @@ public class StudyRoomSelection : MonoBehaviour
 {
     [SerializeField] private GameObject joinRoomObject;
     [SerializeField] private GameObject createRoomObject;
-    [SerializeField] private  List<OpenRoom> allRooms = null;
+    [SerializeField] private GameObject privateRoomCreatedPopup;
+    [SerializeField] private List<OpenRoom> allRooms = null;
     [SerializeField] private TMP_InputField joinPrivateRoomInput;
     [SerializeField] private TMP_InputField createRoomNameInput;
     [SerializeField] private GameObject publicRoomBtnPrefab;
     [SerializeField] private Transform roomListContent;
-    private bool createRoomPrivate;
+    [SerializeField] private TMP_Text createdPrivateRoomIdDisplay;
+    private bool createRoomPublic;
 
     // Start is called before the first frame update
     void Start()
@@ -24,19 +26,20 @@ public class StudyRoomSelection : MonoBehaviour
         // TODO: get allRooms from database
         refreshRoomListFromServer();
         // TODO: load buttons based on allRooms
-        
+
     }
 
     public void AddRoomToScrollView(OpenRoom newRoom)
     {
-        if(newRoom.isPublic){
+        if (newRoom.isPublic)
+        {
             GameObject newRoomObject = Instantiate(publicRoomBtnPrefab, roomListContent);
             PublicRoomSelectButton roomInfo = newRoomObject.GetComponent<PublicRoomSelectButton>();
             roomInfo.displayRoomName(newRoom.roomName);
             roomInfo.setRoomId(newRoom.room4NumID);
-            newRoomObject.transform.localScale = Vector3.one; 
+            newRoomObject.transform.localScale = Vector3.one;
         }
-        
+
     }
 
     // Update is called once per frame
@@ -61,11 +64,11 @@ public class StudyRoomSelection : MonoBehaviour
             entities.DestroyEntity(entity);
         }
     }
-    
+
     public void refreshRoomListFromServer()
     {
         allRooms = null;
-        refreshRoomList(); 
+        refreshRoomList();
 
         // Send a get study room select request to the server.
         EntityManager clientManager = GameObject.FindFirstObjectByType<ClientManager>().GetEntityManager();
@@ -95,59 +98,79 @@ public class StudyRoomSelection : MonoBehaviour
         if (createRoomObject != null && createRoomObject.activeSelf) createRoomObject.SetActive(false);
     }
 
-    public void selectCreateRoomMode(){
+    public void selectCreateRoomMode()
+    {
         if (joinRoomObject != null && joinRoomObject.activeSelf) joinRoomObject.SetActive(false);
         if (createRoomObject != null && !createRoomObject.activeSelf) createRoomObject.SetActive(true);
     }
 
     public void createRoom()
     {
-        // note: assumes allRooms is stored in order of roomID
-        // TODO: generate random id instead of just using next id
+        // input validation
         if (createRoomNameInput.text == "" || createRoomNameInput.text.Length > 125)
         {
             return;
         }
-        int newRoomId = ((allRooms.Count - 1) >= 0) ? allRooms[allRooms.Count - 1].room4NumID + 1 : 0;
-        OpenRoom newRoom = new OpenRoom(createRoomPrivate, createRoomNameInput.text, newRoomId, Guid.NewGuid());
+
+        // get random 4-digit id if private
+        int privateRoomId = 0;
+        if (!createRoomPublic)
+        {
+            do
+            {
+                privateRoomId = UnityEngine.Random.Range(1000, 10000);
+            }
+            while (allRooms.Exists(curRoom => curRoom.room4NumID == privateRoomId));
+
+            if (!privateRoomCreatedPopup.activeSelf) privateRoomCreatedPopup.SetActive(true);
+            createdPrivateRoomIdDisplay.text = privateRoomId.ToString();
+        }
+
+        // OpenRoom newRoom = new OpenRoom(createRoomPublic, createRoomNameInput.text, privateRoomId, Guid.NewGuid());
 
         // Update Server
         EntityManager clientManager = FindFirstObjectByType<ClientManager>().GetEntityManager();
         Entity createStudyRoomRequest = clientManager.CreateEntity(typeof(CreateStudyRoomSelectRpc), typeof(SendRpcCommandRequest));
-        string newGuid = newRoom.roomGuid.ToString();
-        clientManager.SetComponentData(createStudyRoomRequest, new CreateStudyRoomSelectRpc { isPublic = createRoomPrivate, roomName = createRoomNameInput.text, room4NumID = newRoomId, roomGuid = newGuid });
-        // allRooms.Add(newRoom);
-        // AddRoomToScrollView(newRoom);
+        string newGuid = Guid.NewGuid().ToString();
+        clientManager.SetComponentData(createStudyRoomRequest, new CreateStudyRoomSelectRpc { isPublic = createRoomPublic, roomName = createRoomNameInput.text, room4NumID = privateRoomId, roomGuid = newGuid });
 
         createRoomNameInput.text = "";
-
-        // TODO: change user to that room
-        // TODO: if private, let them know what study room ID is once they enter
     }
 
-    public void setRoomCreationTypePublic(bool newType){
-        createRoomPrivate = newType;
+    public void setRoomCreationTypePublic(bool newType)
+    {
+        createRoomPublic = newType;
         // TODO: change color
     }
 
-    public bool getCreateRoomPrivate(){
-        return createRoomPrivate;
+    public bool getcreateRoomPublic()
+    {
+        return createRoomPublic;
     }
 
-    public List<OpenRoom> getAllRooms(){
+    public List<OpenRoom> getAllRooms()
+    {
         return allRooms;
     }
 
-    public void clearAllRoom(){
+    public void clearAllRoom()
+    {
         allRooms = new List<OpenRoom>();
     }
 
-    public void setCreateRoomNameInput(string text){
+    public void setCreateRoomNameInput(string text)
+    {
         createRoomNameInput.text = text;
     }
 
-    public void closeStudyRoomSelection(){
+    public void closeStudyRoomSelection()
+    {
         gameObject.SetActive(false);
+    }
+
+    public void closePrivateRoomPopup()
+    {
+        if (privateRoomCreatedPopup.activeSelf) privateRoomCreatedPopup.SetActive(false);
     }
 }
 
