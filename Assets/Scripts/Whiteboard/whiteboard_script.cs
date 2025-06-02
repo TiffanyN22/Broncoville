@@ -151,7 +151,6 @@ public class Whiteboard : MonoBehaviour, IPointerDownHandler, IDragHandler, IPoi
 
     public void ClearCanvas() // classified as a move
     {
-        prepNewTexture();
         var saveColor = pen_script.myColor;
 
         for (int i = 0; i <= (int)textureSize.x; i++)
@@ -164,6 +163,8 @@ public class Whiteboard : MonoBehaviour, IPointerDownHandler, IDragHandler, IPoi
         textures[currentIndex].Apply();
 
         pen_script.myColor = saveColor;
+        prepNewTexture();
+        mostRecentlyEditedLayer = currentIndex;
     }
 
     public void CleanCanvas(ref Texture2D layerTexture) // not classified as a move
@@ -209,6 +210,7 @@ public class Whiteboard : MonoBehaviour, IPointerDownHandler, IDragHandler, IPoi
 
             CleanCanvas(ref textures[currentIndex + 1]);
             whiteboardLayerArr[currentIndex + 1].name = "current layer " + (currentIndex + 1) + " (you're looking at this one!)";
+            whiteboardLayerArr[currentIndex].SetActive(true);
             whiteboardLayerArr[currentIndex + 1].SetActive(true);
 
             if (currentIndex < textures.Length - 2)
@@ -250,7 +252,7 @@ public class Whiteboard : MonoBehaviour, IPointerDownHandler, IDragHandler, IPoi
         whiteboardLayerArr[currentIndex].name = "edited layer " + (currentIndex);
         whiteboardLayerArr[currentIndex].SetActive(false);
         // if we're looking at a blank layer and we undo, it goes back 2 layers instead of 1
-        if (currentIndex >= 1 && currentIndex < (whiteboardLayerArr.Length - 2) && whiteboardLayerArr[currentIndex + 1].name.Contains("blank")){
+        if ((currentIndex == whiteboardLayerArr.Length - 1) || currentIndex >= 2 && currentIndex < (whiteboardLayerArr.Length - 2) && whiteboardLayerArr[currentIndex + 1].name.Contains("blank")){
             whiteboardLayerArr[currentIndex - 1].SetActive(false);
             currentIndex--;
             Debug.Log("blank layer ahead. showing ");
@@ -263,7 +265,6 @@ public class Whiteboard : MonoBehaviour, IPointerDownHandler, IDragHandler, IPoi
         // rename new texture
         whiteboardLayerArr[currentIndex].name = "current layer " + (currentIndex) + " (you're looking at this one!)";
 
-        whiteboardLayerArr[currentIndex].GetComponent<Image>().sprite = Sprite.Create(textures[currentIndex], new Rect(0, 0, (int)textureSize.x, (int)textureSize.y), Vector2.zero, 100, 0, SpriteMeshType.FullRect, Vector4.zero, false, null);
         Debug.Log("undo. current texture: " + currentIndex);
     }
 
@@ -274,11 +275,11 @@ public class Whiteboard : MonoBehaviour, IPointerDownHandler, IDragHandler, IPoi
             // rename textures
             whiteboardLayerArr[currentIndex].name = "edited layer " + (currentIndex);
 
+            whiteboardLayerArr[currentIndex].SetActive(true);
             whiteboardLayerArr[currentIndex + 1].SetActive(true);
             whiteboardLayerArr[currentIndex + 1].name = "current layer " + (currentIndex + 1) + " (you're looking at this one!)";
 
             currentIndex++;
-            whiteboardLayerArr[currentIndex].GetComponent<Image>().sprite = Sprite.Create(textures[currentIndex], new Rect(0, 0, (int)textureSize.x, (int)textureSize.y), Vector2.zero, 100, 0, SpriteMeshType.FullRect, Vector4.zero, false, null);
         }
         Debug.Log("redo. current texture: " + currentIndex);
     }
@@ -291,11 +292,8 @@ public class Whiteboard : MonoBehaviour, IPointerDownHandler, IDragHandler, IPoi
     public void onWhiteboardClickDown()
     {
         // after undoing and upon editing, create a blank layer ahead of current layer
-        if(mostRecentlyEditedLayer != currentIndex && (currentIndex + 1 != textures.Length - 1))
+        if((mostRecentlyEditedLayer != currentIndex && (currentIndex + 1 != textures.Length - 1)) || currentIndex == 0)
         {
-            //CleanCanvas(ref textures[currentIndex + 1]);
-            //whiteboardLayerArr[currentIndex + 1].SetActive(true);
-            //currentIndex++;
             prepNewTexture();
             Debug.Log("added fresh layers"); 
         }
