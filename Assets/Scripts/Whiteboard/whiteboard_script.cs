@@ -97,11 +97,6 @@ public class Whiteboard : MonoBehaviour, IPointerDownHandler, IDragHandler, IPoi
         else
         {
         }
-
-        // Vector3[] corners = new Vector3[4];
-        //whiteboard.rectTransform.GetWorldCorners(corners);
-        //Debug.Log("wc:" + corners[0].x);
-        // Debug.Log("x:" + whiteboard.rectTransform.rect.position.x);
     }
 
     // draw
