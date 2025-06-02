@@ -113,7 +113,7 @@ public class LoginUIController : UIBase
 		{
 			SceneReference subscene = entities.GetComponentData<SceneReference>(entity);
 
-			if(subscene.SceneGUID != sceneManager.GetMainHubGUID())
+			if(subscene.SceneGUID != sceneManager.GetMainHubGUID(Scenes.MAIN_HUB))
 			{
 				continue;
 			}

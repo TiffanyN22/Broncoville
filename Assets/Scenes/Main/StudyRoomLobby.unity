@@ -132,7 +132,7 @@ GameObject:
   - component: {fileID: 98274537}
   - component: {fileID: 98274536}
   m_Layer: 0
-  m_Name: Sky
+  m_Name: Floor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -241,7 +241,7 @@ GameObject:
   - component: {fileID: 1277558396}
   - component: {fileID: 1277558395}
   m_Layer: 0
-  m_Name: Boutique
+  m_Name: Receptionist
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -350,7 +350,7 @@ GameObject:
   - component: {fileID: 1434910449}
   - component: {fileID: 1434910448}
   m_Layer: 0
-  m_Name: Left Stairs
+  m_Name: ReceptionistTable
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -461,7 +461,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1547230949
 Transform:
   m_ObjectHideFlags: 0
@@ -495,7 +495,7 @@ GameObject:
   - component: {fileID: 1726898295}
   - component: {fileID: 1726898294}
   m_Layer: 0
-  m_Name: Grass
+  m_Name: WallAndFrame
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -604,7 +604,7 @@ GameObject:
   - component: {fileID: 1898664017}
   - component: {fileID: 1898664016}
   m_Layer: 0
-  m_Name: Far Left Background
+  m_Name: Pillars
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

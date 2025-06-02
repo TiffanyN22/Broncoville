@@ -55,7 +55,7 @@ public class ServerManager : MonoBehaviour
 		// Load the main hub sub scene.
 		SubSceneManager scenes = FindFirstObjectByType<SubSceneManager>();
 		LoadParameters parameters = new LoadParameters{Flags = SceneLoadFlags.BlockOnStreamIn};
-		Entity scene = LoadSceneAsync(this.world.Unmanaged, scenes.GetMainHubGUID(), parameters);
+		Entity scene = LoadSceneAsync(this.world.Unmanaged, scenes.GetMainHubGUID(Scenes.MAIN_HUB), parameters);
 		
 		// Wait until the sub scene has finished loading.
 		while(!IsSceneLoaded(this.world.Unmanaged, scene))

@@ -7473,6 +7473,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mainHubSubScene: {fileID: 187161429}
+  studyRoomLobbyScene: {fileID: 314254509}
+  studyRoomScene: {fileID: 0}
 --- !u!1 &1161221579
 GameObject:
   m_ObjectHideFlags: 0
