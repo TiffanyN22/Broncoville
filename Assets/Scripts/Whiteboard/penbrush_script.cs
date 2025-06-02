@@ -6,15 +6,17 @@ using UnityEngine.UI;
 
 public class penbrush_script : MonoBehaviour, IPointerDownHandler, IDragHandler, IPointerUpHandler
 {
-    private Image penBrush;
+    private RawImage penBrush;
     [SerializeField] private Whiteboard whiteboard_script;
     private RectTransform penBrushRT;
+    [SerializeField] public int xoffset;
+    [SerializeField] public int yoffset;
 
     // Start is called before the first frame update
     void Start()
     {
         whiteboard_script.penSize = 10; // penSize is 0 for some reason. set here as well
-        penBrush = GetComponent<Image>();
+        penBrush = GetComponent<RawImage>();
         penBrushRT = GetComponent<RectTransform>();
         penBrushRT.sizeDelta = new Vector2(whiteboard_script.penSize, whiteboard_script.penSize);
         penBrushRT.anchoredPosition = new Vector2(0, 0);
@@ -28,7 +30,11 @@ public class penbrush_script : MonoBehaviour, IPointerDownHandler, IDragHandler,
     // Update is called once per frame
     void Update()
     {
-        penBrushRT.anchoredPosition = new Vector2((int)(whiteboard_script.GetMouseWorldPosition().x - (whiteboard_script.textureSize.x / 2)), (int)(whiteboard_script.GetMouseWorldPosition().y - (whiteboard_script.textureSize.y / 2)));
+        float x_offset = xoffset + (whiteboard_script.textureSize.x / 2);
+        float y_offset = yoffset + (whiteboard_script.textureSize.y / 2);
+        penBrushRT.anchoredPosition = new Vector2((int)(whiteboard_script.GetMouseWorldPosition().x - (Screen.width / 2)), (int)(whiteboard_script.GetMouseWorldPosition().y - (Screen.height / 2)));
+        //penBrushRT.anchoredPosition = new Vector2((int)(whiteboard_script.GetMouseWorldPosition().x - x_offset), (int)(whiteboard_script.GetMouseWorldPosition().y - y_offset));
+        // penBrushRT.anchoredPosition = new Vector2(xoffset, yoffset);
     }
 
     // added extra drawing events in case mouse clicks on brush and not whiteboard (it's either this or raycasting so i choose this)

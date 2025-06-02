@@ -7,6 +7,10 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using System;
 using System.Security.Cryptography;
+using System.Numerics;
+using Vector2 = UnityEngine.Vector2;
+using Vector3 = UnityEngine.Vector3;
+using Vector4 = UnityEngine.Vector4;
 
 // add todo whenever things can be synced
 // sync everything to whiteboard data file
@@ -14,12 +18,15 @@ using System.Security.Cryptography;
 
 public class Whiteboard : MonoBehaviour, IPointerDownHandler, IDragHandler, IPointerEnterHandler, IPointerExitHandler, IPointerUpHandler
 {
+
     [NonSerialized] public int rangeUndoRedo = 10;
     public Vector2 textureSize;
     public int currentIndex;
     public Vector2 lineStart;
+    public Vector2 worldLineStart;
     public Vector2 lineEnd;
 
+    [SerializeField] public Canvas whiteboardParentCanvas;
     [NonSerialized] public bool whiteboardHover = false;
     [SerializeField] public int penSize = 10; // default penSize
     [SerializeField] private Colors pen_script;
@@ -33,8 +40,9 @@ public class Whiteboard : MonoBehaviour, IPointerDownHandler, IDragHandler, IPoi
     [SerializeField] public GameObject whiteboardLayer;
     [NonSerialized] public GameObject[] whiteboardLayerArr;
     [NonSerialized] public Texture2D[] textures;
+    public Vector3 mousePosition;
 
-    public Vector2 mousePositionOffset;
+    [SerializeField] public Vector2 mousePositionOffset;
     [NonSerialized] public int nullValue = -123; // vectors can't be null, using this as replacement for null
     [NonSerialized] public Vector2 lastTouch; // where the whiteboard was last drawn on
     public int mostRecentlyEditedLayer;
@@ -67,17 +75,20 @@ public class Whiteboard : MonoBehaviour, IPointerDownHandler, IDragHandler, IPoi
         mostRecentlyEditedLayer = 0;
 
         penSize = 10;
+
     }
 
     // Update is called once per frame
     void Update()
     {
-        var my_draw_x = (int)(GetMouseWorldPosition().x - mousePositionOffset.x);
-        var my_draw_y = (int)(GetMouseWorldPosition().y - mousePositionOffset.y);
+        mousePosition = Input.mousePosition;
+
+        var my_draw_x = (int)(GetWhiteboardWorldPosition().x - mousePositionOffset.x);
+        var my_draw_y = (int)(GetWhiteboardWorldPosition().y - mousePositionOffset.y);
         // default values
 
         // if the pen is in whiteboard bounds
-        inWhiteboardBounds = GetMouseWorldPosition().x - mousePositionOffset.x > 0 && GetMouseWorldPosition().x + mousePositionOffset.x < textureSize.x && GetMouseWorldPosition().y - mousePositionOffset.y > 0 && GetMouseWorldPosition().y + mousePositionOffset.y < textureSize.y;
+        inWhiteboardBounds = GetWhiteboardWorldPosition().x - mousePositionOffset.x > 0 && GetWhiteboardWorldPosition().x + mousePositionOffset.x < textureSize.x && GetWhiteboardWorldPosition().y - mousePositionOffset.y > 0 && GetWhiteboardWorldPosition().y + mousePositionOffset.y < textureSize.y;
 
         if (mouseLeftClick && inWhiteboardBounds && penMode) // normal drawing mode
         {
@@ -86,6 +97,11 @@ public class Whiteboard : MonoBehaviour, IPointerDownHandler, IDragHandler, IPoi
         else
         {
         }
+
+        // Vector3[] corners = new Vector3[4];
+        //whiteboard.rectTransform.GetWorldCorners(corners);
+        //Debug.Log("wc:" + corners[0].x);
+        // Debug.Log("x:" + whiteboard.rectTransform.rect.position.x);
     }
 
     // draw
@@ -93,6 +109,17 @@ public class Whiteboard : MonoBehaviour, IPointerDownHandler, IDragHandler, IPoi
     {
         return Input.mousePosition;
     }
+
+    public Vector3 GetWhiteboardWorldPosition()
+    {
+        Vector3[] corners = new Vector3[4];
+        whiteboard.rectTransform.GetWorldCorners(corners);
+        float xoffset = corners[0].x;
+        float yoffset = corners[0].y;
+        return new Vector3(Input.mousePosition.x - xoffset, Input.mousePosition.y - yoffset, Input.mousePosition.z);
+
+    }
+
     public void OnPointerDown(PointerEventData eventData)
     {
         onWhiteboardClickDown();
@@ -334,13 +361,13 @@ public class Whiteboard : MonoBehaviour, IPointerDownHandler, IDragHandler, IPoi
     // LINE MODE FUNCTIONS
     private void lineModeDrag()
     {
-        lineEnd = GetMouseWorldPosition();
+        lineEnd = GetWhiteboardWorldPosition();
         mylinemaker_script.rotateLine();
     }
 
     private void lineModeClickUp()
     {
-        lineEnd = GetMouseWorldPosition();
+        lineEnd = GetWhiteboardWorldPosition();
         mylinemaker_script.rotateLine();
         mylinemaker_script.hideLine();
 
@@ -359,7 +386,8 @@ public class Whiteboard : MonoBehaviour, IPointerDownHandler, IDragHandler, IPoi
 
     private void lineModeClickDown()
     {
-        lineStart = GetMouseWorldPosition();
+        lineStart = GetWhiteboardWorldPosition();
+        worldLineStart = GetMouseWorldPosition();
         mylinemaker_script.rotateLine();
         mylinemaker_script.showLine();
         mylinemaker_script.setLineStart();
