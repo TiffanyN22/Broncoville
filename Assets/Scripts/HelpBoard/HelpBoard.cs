@@ -9,18 +9,16 @@ using Unity.Collections;
 public class HelpBoard : MonoBehaviour
 {
     // TODO: create interface to create help items
-    private HelpDetailsInfo[] allHelpItems = null;
+    [SerializeField] private HelpDetailsInfo[] allHelpItems = null;
     // private Dictionary<int, List<string>> allHelpDescriptions = new Dictionary<int, List<string>>();
     [SerializeField] private GameObject helpItemPrefab;
     [SerializeField] private Transform helpListContent;
     [SerializeField] private GameObject helpDetails;
     [SerializeField] private GameObject helpList;
 
-    void Start()
+    void OnEnable()
     {
-        // Send a create account request to the server.
-		EntityManager clientManager = FindFirstObjectByType<ClientManager>().GetEntityManager();
-		Entity getHelp = clientManager.CreateEntity(typeof(GetHelpRpc), typeof(SendRpcCommandRequest));
+        refreshItemListFromServer();
     }
 
     public void Update()
@@ -54,6 +52,16 @@ public class HelpBoard : MonoBehaviour
         }
     }
 
+    public void refreshItemListFromServer()
+    {
+        allHelpItems = null;
+        refreshHelpDetails(); 
+
+        // Send a create account request to the server.
+        EntityManager clientManager = FindFirstObjectByType<ClientManager>().GetEntityManager();
+        Entity getHelp = clientManager.CreateEntity(typeof(GetHelpRpc), typeof(SendRpcCommandRequest));
+    }
+
     public void refreshHelpDetails()
     {
         // delete previous items
@@ -63,6 +71,7 @@ public class HelpBoard : MonoBehaviour
         }
 
         // add allHelpItems
+        if (allHelpItems == null) return;
         foreach (HelpDetailsInfo curItem in allHelpItems)
         {
             AddItemToScrollview(curItem);

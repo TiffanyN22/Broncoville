@@ -33,5 +33,35 @@ public class HelpBoardEntryList : MonoBehaviour
     return allHelpItems[guid];
   }
 
-    // TODO: set/edit functions
+  public void addItem(HelpDetailsInfo newInfo)
+  {
+    if (newInfo.guid == Guid.Empty)
+    {
+      newInfo.guid = Guid.NewGuid();
+    }
+    allHelpItemsList.Add(newInfo);
+
+    if (!allHelpItems.ContainsKey(newInfo.guid))
+    {
+      allHelpItems.Add(newInfo.guid, newInfo);
+    }
+    else
+    {
+      allHelpItems[newInfo.guid] = newInfo;
+    }
+  }
+
+  public void updateDescription(Guid guid, string description)
+  {
+    allHelpItems[guid].description = description;
+    HelpDetailsInfo itemInList = allHelpItemsList.Find(item => item.guid == guid);
+    itemInList.description = description;
+  }
+
+  public void deleteItem(Guid guid)
+  {
+    allHelpItems.Remove(guid);
+    HelpDetailsInfo itemInList = allHelpItemsList.Find(item => item.guid == guid);
+    allHelpItemsList.Remove(itemInList);
+  }
 }
