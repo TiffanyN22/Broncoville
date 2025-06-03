@@ -65,7 +65,6 @@ public class Whiteboard : MonoBehaviour, IPointerDownHandler, IDragHandler, IPoi
             whiteboardLayerArr[currentIndex].name = "blank layer " + (currentIndex);
             whiteboardLayerArr[currentIndex].SetActive(false);
             textures[currentIndex] = new Texture2D(width: (int)textureSize.x, height: (int)textureSize.y);
-            textures[currentIndex].filterMode = FilterMode.Point;
             whiteboardLayerArr[currentIndex].GetComponent<Image>().sprite = Sprite.Create(textures[currentIndex], new Rect(0, 0, (int)textureSize.x, (int)textureSize.y), Vector2.zero, 100, 0, SpriteMeshType.FullRect, Vector4.zero, false, null); // set texture
             CleanCanvas(ref textures[currentIndex]);
 
