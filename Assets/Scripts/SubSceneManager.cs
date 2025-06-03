@@ -6,7 +6,8 @@ using UnityEngine;
 public enum Location
 {
 	MAIN_HUB,
-	STUDY_ROOM_LOBBY
+	STUDY_ROOM_LOBBY,
+	STUDY_ROOM
 }
 
 public class SubSceneManager : MonoBehaviour
@@ -27,6 +28,7 @@ public class SubSceneManager : MonoBehaviour
 	{
 		this.offset.Add(this.mainHubSubScene.SceneGUID, this.mainHubSubScene.transform.position);
 		this.offset.Add(this.studyRoomLobbySubScene.SceneGUID, this.studyRoomLobbySubScene.transform.position);
+		this.offset.Add(this.studyRoomScene.SceneGUID, this.studyRoomScene.transform.position);
 	}
 
 	/// <summary>
@@ -41,6 +43,8 @@ public class SubSceneManager : MonoBehaviour
 			return this.mainHubSubScene;
 		case Location.STUDY_ROOM_LOBBY:
 			return this.studyRoomLobbySubScene;
+		case Location.STUDY_ROOM:
+			return this.studyRoomScene;
 		default:
 			return null;
 		}
@@ -67,6 +71,8 @@ public class SubSceneManager : MonoBehaviour
 			return this.mainHubSubScene.SceneGUID;
 		case Location.STUDY_ROOM_LOBBY:
 			return this.studyRoomLobbySubScene.SceneGUID;
+		case Location.STUDY_ROOM:
+			return this.studyRoomScene.SceneGUID;
 		default:
 			return new Unity.Entities.Hash128{Value = uint4.zero};
 		}
