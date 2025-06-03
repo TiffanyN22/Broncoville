@@ -57,10 +57,9 @@ public class Messaging : MonoBehaviour
     string fullMessage = $"[{username}]: {message}";
 
     // Send message to server
-     EntityManager clientManager = FindFirstObjectByType<ClientManager>().GetEntityManager();
+    EntityManager clientManager = FindFirstObjectByType<ClientManager>().GetEntityManager();
     Entity sendMessageEntity = clientManager.CreateEntity(typeof(MessagingSendMessageRpc), typeof(SendRpcCommandRequest));
     clientManager.SetComponentData(sendMessageEntity, new MessagingSendMessageRpc { message = fullMessage });
-
 
     inputField.textComponent.color = Color.white;
     inputField.text = "";
