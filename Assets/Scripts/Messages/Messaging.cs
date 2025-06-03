@@ -8,7 +8,7 @@ using Unity.NetCode;
 using Unity.Collections;
 public class Messaging : MonoBehaviour
 {
-  string username = "Tiffany"; // TODO: get username
+  string username = "Unknown";
   [SerializeField] private TMP_InputField inputField;
   [SerializeField] private  GameObject textItemPrefab;
   [SerializeField] private  GameObject messageDisplayGroup;
@@ -17,6 +17,33 @@ public class Messaging : MonoBehaviour
 
   void Start()
   {
+    EntityManager entities = FindFirstObjectByType<ClientManager>().GetEntityManager();
+    EntityQuery query = entities.CreateEntityQuery(typeof(NetworkId));
+    NativeArray<NetworkId> accounts = query.ToComponentDataArray<NetworkId>(Allocator.Temp);
+
+    if (accounts.Length == 0)
+    {
+        Debug.Log("Faile to find NetworkId");
+        return;
+    }
+
+    int id = accounts[0].Value;
+
+    query = entities.CreateEntityQuery(typeof(GhostOwner));
+    NativeArray<Entity> players = query.ToEntityArray(Allocator.Temp);
+
+    for (int i = 0; i < players.Length; ++i)
+    {
+        GhostOwner ghost = entities.GetComponentData<GhostOwner>(players[i]);
+
+        if (ghost.NetworkId == id)
+        {
+            AccountData account = entities.GetComponentData<AccountData>(players[i]);
+            username = account.name.ToString();
+            break;
+        }
+    }
+
     inputField.onSubmit.AddListener(SendMessage);
   }
 
