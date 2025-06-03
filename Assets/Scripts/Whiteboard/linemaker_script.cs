@@ -35,13 +35,13 @@ public class linemaker_script : MonoBehaviour
         float rel_y = (float)(whiteboard_script.GetMouseWorldPosition().y - object_pos.y);
         float angle = Mathf.Atan2(rel_y, rel_x) * Mathf.Rad2Deg;
         transform.rotation = Quaternion.Euler(new Vector3(0, 0, angle)); // rotate around parent object (parent object has axis at edge)
-        float new_len = Mathf.Sqrt(Mathf.Pow(whiteboard_script.GetMouseWorldPosition().x - whiteboard_script.lineStart.x, 2) + Mathf.Pow(whiteboard_script.GetMouseWorldPosition().y - whiteboard_script.lineStart.y, 2));
+        float new_len = Mathf.Sqrt(Mathf.Pow(whiteboard_script.GetMouseWorldPosition().x - whiteboard_script.worldLineStart.x, 2) + Mathf.Pow(whiteboard_script.GetMouseWorldPosition().y - whiteboard_script.worldLineStart.y, 2));
         lineMakerRT.sizeDelta = new Vector2(new_len, whiteboard_script.penSize);
     }
 
     public void setLineStart()
     {
-        transform.position = whiteboard_script.lineStart;
+        transform.position = whiteboard_script.worldLineStart;
     }
 
     public void hideLine()
