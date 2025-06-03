@@ -1,6 +1,8 @@
 using Unity.Collections;
 using Unity.Entities;
+using Unity.Mathematics;
 using Unity.NetCode;
+using Unity.Transforms;
 using UnityEngine;
 
 public struct LoginRequestRpc : IRpcCommand
@@ -99,16 +101,36 @@ public partial struct ServerLoginSystem : ISystem
 				// Send a message to the client telling to load the main hub sub scene.
 				Entity loadMainHub = commandBuffer.CreateEntity();
 
-				commandBuffer.AddComponent(loadMainHub, new LoadSceneRpc{subsceneHash = Object.FindFirstObjectByType<SubSceneManager>().GetMainHubGUID()});
+				commandBuffer.AddComponent(loadMainHub, new LoadSceneRpc{subsceneHash = Object.FindFirstObjectByType<SubSceneManager>().GetGUID(Location.MAIN_HUB)});
 				commandBuffer.AddComponent(loadMainHub, new SendRpcCommandRequest{TargetConnection = request.ValueRO.SourceConnection});
 
 				// Spawn the player in the world and set it's owner to the newly signed in client.
-				MainHubSpawnerData spawner = SystemAPI.GetSingleton<MainHubSpawnerData>();
-				Entity newPlayer = commandBuffer.Instantiate(spawner.player);
+				EntityManager serverEntities = Object.FindFirstObjectByType<ServerManager>().GetEntityManager();
+				Unity.Entities.Hash128 mainHubGuid = Object.FindFirstObjectByType<SubSceneManager>().GetGUID(Location.MAIN_HUB);
+				PlayerSpawner mainHubSpawner = new PlayerSpawner{player = Entity.Null};
+
+				foreach((RefRO<PlayerSpawner> spawner, Entity spawnerEntity) in SystemAPI.Query<RefRO<PlayerSpawner>>().WithEntityAccess())
+				{
+					if(serverEntities.GetSharedComponent<SceneSection>(spawnerEntity).SceneGUID == mainHubGuid)
+					{
+						mainHubSpawner = spawner.ValueRO;
+						break;
+					}
+				}
+
+				if(mainHubSpawner.player == Entity.Null)
+				{
+					Debug.Log("Failed to find the main hub player spawner.");
+					continue;
+				}
+
+				//PlayerSpawner spawner = SystemAPI.GetSingleton<PlayerSpawner>();
+				Entity newPlayer = commandBuffer.Instantiate(mainHubSpawner.player);
 				NetworkId playerId = this.clients[request.ValueRO.SourceConnection];
 
 				commandBuffer.SetComponent(newPlayer, new AccountData{name = account.GetUsername(), bodyColor = account.GetBodyColor(), hairColor = account.GetHairColor(), hairStyle = account.GetHairStyle()});
 				commandBuffer.SetComponent(newPlayer, new GhostOwner{NetworkId = playerId.Value});
+				commandBuffer.SetComponent(newPlayer, new LocalTransform{Position = new float3{x = 0f, y = -1f, z = 0f}, Scale = 1f, Rotation = quaternion.identity});
 			}
 
 			// Destroy the message now that it has been processed.

@@ -1,6 +1,7 @@
 using Unity.Entities;
 using Unity.Mathematics;
 using Unity.NetCode;
+using Unity.Physics;
 using Unity.Transforms;
 
 [UpdateInGroup(typeof(PredictedSimulationSystemGroup))]
@@ -9,14 +10,14 @@ public partial struct PlayerMovementSystem : ISystem
 	public void OnUpdate(ref SystemState state)
 	{
 		// Get all player inputs and apply them.
-		foreach ((RefRO<PlayerInputData> input, RefRW<LocalTransform> transform) in SystemAPI.Query<RefRO<PlayerInputData>, RefRW<LocalTransform>>().WithAll<Simulate>())
+		foreach ((RefRO<PlayerInputData> input, RefRW<LocalTransform> position, RefRW<PhysicsVelocity> physics) in SystemAPI.Query<RefRO<PlayerInputData>, RefRW<LocalTransform>, RefRW<PhysicsVelocity>>().WithAll<Simulate>())
 		{
 			// Normalize the input to prevent illegal inputs.
 			float2 safeInput = math.normalizesafe(input.ValueRO.movement);
 
 			// Move the player.
-			transform.ValueRW.Position += new float3(safeInput.x * SystemAPI.Time.DeltaTime * 2f, safeInput.y * SystemAPI.Time.DeltaTime * 2f, 0f);
-			transform.ValueRW.Position = new float3(transform.ValueRW.Position.x, transform.ValueRW.Position.y, transform.ValueRW.Position.y);
+			physics.ValueRW.Linear = new float3(2f * safeInput.x, 2f * safeInput.y, 0f);
+			position.ValueRW.Position = new float3(position.ValueRW.Position.x, position.ValueRW.Position.y, position.ValueRW.Position.y);
 		}
 	}
 }

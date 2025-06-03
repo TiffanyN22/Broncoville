@@ -81,7 +81,7 @@ public class LoginUIController : UIBase
 		{
 			SceneReference subscene = client.GetEntityManager().GetComponentData<SceneReference>(entity);
 
-			if(subscene.SceneGUID == subSceneManager.GetMainHubGUID() && SceneSystem.IsSceneLoaded(client.GetWorld().Unmanaged, entity))
+			if(subscene.SceneGUID == subSceneManager.GetGUID(Location.MAIN_HUB) && SceneSystem.IsSceneLoaded(client.GetWorld().Unmanaged, entity))
 			{
 				Destroy(this.loadingScreen.gameObject);
 				this.checkScene = false;
