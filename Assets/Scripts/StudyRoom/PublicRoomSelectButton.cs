@@ -18,9 +18,12 @@ public class PublicRoomSelectButton : MonoBehaviour
       roomId = newId;
     }
 
-    public void clickedButton(){
-      // TODO: change to correct roomID
-      SceneManager.LoadScene("StudyRoomScene");
-      Debug.Log($"Going to {roomId}");
+  public void clickedButton()
+  {
+    // TODO: change to correct roomID
+    // SceneManager.LoadScene("StudyRoomScene");
+    Debug.Log($"Going to {roomId}");
+
+    // FindFirstObjectByType<ClientManager>().LoadSubScene(FindFirstObjectByType<SubSceneManager>().GetGUID(Location.STUDY_ROOM));
     }
 }

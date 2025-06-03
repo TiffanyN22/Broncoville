@@ -1,20 +1,27 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections;
+using System.Collections.Generic;
+using System;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using Unity.Entities;
+using Unity.NetCode;
+using Unity.Collections;
 
 public class CustomizePony : MonoBehaviour
 {
     // Color Change Variables
     public Slider colorSlider;
     public Slider saturationSlider;
-    public Image targetSprite;
-    public Image hueBackgroundSprite;
+    public RawImage targetSprite;
+    public RawImage hueBackgroundSprite;
 
     // Hair Change Variables
-    public Image displayedHairImage;
-    public Sprite hair1Sprite;
-    public Sprite hair2Sprite;
+    public RawImage displayedHairImage;
+    public Texture hair1Sprite;
+    public Texture hair2Sprite;
 
     // Actual Pony
     public SpriteRenderer pony;
@@ -48,17 +55,25 @@ public class CustomizePony : MonoBehaviour
 
     public void SelectHair1(){
         if (displayedHairImage == null || hair1Sprite == null) return;
-        displayedHairImage.sprite = hair1Sprite;
+        displayedHairImage.texture = hair1Sprite;
     }
 
     public void SelectHair2(){
         if (displayedHairImage == null || hair2Sprite == null) return;
-        displayedHairImage.sprite = hair2Sprite;
+        displayedHairImage.texture = hair2Sprite;
     }
 
     public void ClosePopup(){
-        pony.color = targetSprite.color;
-        hair.sprite = displayedHairImage.sprite;
+         // Send new pony to server
+        // EntityManager clientManager = FindFirstObjectByType<ClientManager>().GetEntityManager();
+        // Entity sendMessageEntity = clientManager.CreateEntity(typeof(CustomizePonyRpc), typeof(SendRpcCommandRequest));
+        // clientManager.SetComponentData(sendMessageEntity, new CustomizePonyRpc { bodyColor = targetSprite.color, hairStyle = displayedHairImage.texture == hair1Sprite ? HairStyle.WAVY : HairStyle.STRAIGHT });
+
+
+        // pony.color = targetSprite.color;
+        // hair.sprite = displayedHairImage.sprite;
+
+        // SEND TO SERVER
         gameObject.SetActive(false);
     }
 }
