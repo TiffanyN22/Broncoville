@@ -20,7 +20,7 @@ public class ManageHelpItems : MonoBehaviour
     [SerializeField] HelpBoard helpBoard;
     [SerializeField] private GameObject myHelpItemsPrefab;
     [SerializeField] private Transform myHelpListContent;
-    private string username = "Tiffany"; // TODO: get from user
+    private string username = "Unknown"; 
 
     // AddHelpItem Variable
     [SerializeField] private TMP_InputField addItemTitleInput;
@@ -31,7 +31,36 @@ public class ManageHelpItems : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        EntityManager entities = FindFirstObjectByType<ClientManager>().GetEntityManager();
+        EntityQuery query = entities.CreateEntityQuery(typeof(NetworkId));
+        NativeArray<NetworkId> accounts = query.ToComponentDataArray<NetworkId>(Allocator.Temp);
 
+        if (accounts.Length == 0)
+        {
+            Debug.Log("Faile to find NetworkId");
+            return;
+        }
+
+        int id = accounts[0].Value;
+
+        query = entities.CreateEntityQuery(typeof(GhostOwner));
+        NativeArray<Entity> players = query.ToEntityArray(Allocator.Temp);
+
+        for (int i = 0; i < players.Length; ++i)
+        {
+            GhostOwner ghost = entities.GetComponentData<GhostOwner>(players[i]);
+
+            if (ghost.NetworkId == id)
+            {
+                AccountData account = entities.GetComponentData<AccountData>(players[i]);
+                username = account.name.ToString();
+                break;
+            }
+        }
+        // // EntityManager entities = FindFirstObjectByType<ClientManager>().GetEntityManager();
+        //     // NativeArray<AccountData> accounts = entities.CreateEntityQuery(typeof(NetworkId), typeof(AccountInfo));
+        //     foreach (query)
+        //         username = entities.GetComponentData<AccountData>(query.GetSingletonEntity()).name.ToString();
     }
 
     // Update is called once per frame

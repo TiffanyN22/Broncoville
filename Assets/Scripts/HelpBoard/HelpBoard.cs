@@ -42,7 +42,7 @@ public class HelpBoard : MonoBehaviour
             }
             allHelpItems[response.id].topic = response.topic.ToString();
             allHelpItems[response.id].requester = response.requester.ToString();
-            allHelpItems[response.id].guid = Guid.Parse(response.guid.ToString()); // TODO: fix
+            allHelpItems[response.id].guid = Guid.Parse(response.guid.ToString()); 
             Debug.Log(response.guid);
             // Debug.Log(response);
 
