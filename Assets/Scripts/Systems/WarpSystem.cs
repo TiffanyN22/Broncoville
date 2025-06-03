@@ -39,12 +39,12 @@ public partial struct ServerWarpSystem : ISystem
 				}
 
 				EntityManager serverEntities = Object.FindFirstObjectByType<ServerManager>().GetEntityManager();
-				Unity.Entities.Hash128 mainHubGuid = Object.FindFirstObjectByType<SubSceneManager>().GetGUID(location.ValueRO.subScene);
+				Unity.Entities.Hash128 guid = Object.FindFirstObjectByType<SubSceneManager>().GetGUID(location.ValueRO.subScene);
 				PlayerSpawner playerSpawner = new PlayerSpawner{player = Entity.Null};
 
 				foreach((RefRO<PlayerSpawner> spawner, Entity spawnerEntity) in SystemAPI.Query<RefRO<PlayerSpawner>>().WithEntityAccess())
 				{
-					if(serverEntities.GetSharedComponent<SceneSection>(spawnerEntity).SceneGUID == mainHubGuid)
+					if(serverEntities.GetSharedComponent<SceneSection>(spawnerEntity).SceneGUID == guid)
 					{
 						playerSpawner = spawner.ValueRO;
 						break;

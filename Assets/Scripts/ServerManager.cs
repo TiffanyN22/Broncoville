@@ -69,6 +69,13 @@ public class ServerManager : MonoBehaviour
 			this.world.Update();
 		}
 
+		scene = LoadSceneAsync(this.world.Unmanaged, scenes.GetGUID(Location.STUDY_ROOM), parameters);
+
+		while(!IsSceneLoaded(this.world.Unmanaged, scene))
+		{
+			this.world.Update();
+		}
+
 		// Start listening on the server.
 		EntityQuery streamDriver = this.world.EntityManager.CreateEntityQuery(ComponentType.ReadWrite<NetworkStreamDriver>());
 		streamDriver.GetSingletonRW<NetworkStreamDriver>().ValueRW.Listen(NetworkEndpoint.Parse(this.address, this.port));

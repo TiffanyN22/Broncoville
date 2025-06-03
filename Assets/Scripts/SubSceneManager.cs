@@ -15,7 +15,6 @@ public class SubSceneManager : MonoBehaviour
 	/// <summary>The main hub sub-scene.</summary>
 	[Tooltip("The main hub sub-scene.")]
 	[SerializeField] private SubScene mainHubSubScene = null;
-	[SerializeField] private SubScene studyRoomLobbyScene = null;
 	[SerializeField] private SubScene studyRoomScene = null;
 
 	/// <summary>The main hub sub-scene.</summary>
