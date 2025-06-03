@@ -48,7 +48,7 @@ public class LoginUIController : UIBase
 	private LoadingScreenUIController loadingScreen = null;
 
 	/// <summary>Whether or not the client logged in successfully. Used to switch loading screen logic when loading the hub.</summary>
-	private bool loggedIn = false;
+	private bool checkScene = false;
 
 	public void Start()
 	{
@@ -67,60 +67,24 @@ public class LoginUIController : UIBase
 
 	public void Update()
 	{
-		// Update is only used for networking, so return if not waiting for a response.
-		if(this.loadingScreen == null)
+		if(!checkScene)
 		{
 			return;
 		}
 
+		// If the login was successful, wait until the main hub has loaded before closing.
 		ClientManager client = FindFirstObjectByType<ClientManager>();
-		EntityManager entities = client.GetEntityManager();
-		
-		if(!this.loggedIn)
-		{
-			// Check for entities containing the log in response message.
-			EntityQuery connections = entities.CreateEntityQuery(ComponentType.ReadOnly<LoginResponseRpc>());
-			
-			// If a log in response was found, open the loading screen UI or show an error.
-			foreach(Entity entity in connections.ToEntityArray(Allocator.Temp))
-			{
-				LoginResponseRpc response = entities.GetComponentData<LoginResponseRpc>(entity);
-				Destroy(this.loadingScreen.gameObject);
+		SubSceneManager subSceneManager = FindFirstObjectByType<SubSceneManager>();
+		EntityQuery scenes = client.GetEntityManager().CreateEntityQuery(ComponentType.ReadOnly<SceneReference>());
 
-				if(!(this.loggedIn = response.accepted))
-				{
-					Debug.Log("Failed to log in.");
-					this.errorMessage.SetText(response.reason.ToString());
-				}
-				else
-				{
-					this.loadingScreen = Instantiate(this.loadingScreenPrefab, this.transform.parent);
-					this.loadingScreen.SetLoadingMessage("Loading World...");
-				}
-
-				entities.DestroyEntity(entity);
-			}
-
-			return;
-		}
-		
-		// Check for entities containing sub scenes.
-		EntityQuery scenes = entities.CreateEntityQuery(ComponentType.ReadOnly<SceneReference>());
-		SubSceneManager sceneManager = FindFirstObjectByType<SubSceneManager>();
-
-		// If a sub scene was found, check if it's the main hub and whether or not it's loaded.
 		foreach(Entity entity in scenes.ToEntityArray(Allocator.Temp))
 		{
-			SceneReference subscene = entities.GetComponentData<SceneReference>(entity);
+			SceneReference subscene = client.GetEntityManager().GetComponentData<SceneReference>(entity);
 
-			if(subscene.SceneGUID != sceneManager.GetMainHubGUID())
-			{
-				continue;
-			}
-
-			if(SceneSystem.IsSceneLoaded(client.GetWorld().Unmanaged, entity))
+			if(subscene.SceneGUID == subSceneManager.GetGUID(Location.MAIN_HUB) && SceneSystem.IsSceneLoaded(client.GetWorld().Unmanaged, entity))
 			{
 				Destroy(this.loadingScreen.gameObject);
+				this.checkScene = false;
 				this.Close();
 			}
 		}
@@ -150,7 +114,7 @@ public class LoginUIController : UIBase
 
 		// Verify the password.
 		this.errorMessage.SetText(Account.VerifyPassword(this.passwordField.text));
-		
+
 		if(this.errorMessage.text.Length > 0)
 		{
 			return;
@@ -172,6 +136,32 @@ public class LoginUIController : UIBase
 		EntityManager entities = FindFirstObjectByType<ClientManager>().GetEntityManager();
 		Entity loginRequest = entities.CreateEntity(typeof(LoginRequestRpc), typeof(SendRpcCommandRequest));
 		entities.SetComponentData(loginRequest, new LoginRequestRpc{username = this.usernameField.text, password = this.passwordField.text});
+	}
+
+	/// <summary>
+	/// Login the user. This function should only be called by the login 
+	/// system. Calling it elsewhere may lead to a client-server desync.
+	/// </summary>
+	/// <param name="success">Whether or not the login was successful.</param>
+	/// <param name="reason">The reason why the login failed.</param>
+	public void Login(bool success, string reason)
+	{
+		if(this.loadingScreen == null)
+		{
+			return;
+		}
+
+		if(success)
+		{
+			this.loadingScreen.SetLoadingMessage("Loading World...");
+			this.loadingScreen.SetBackgroundColor(Color.white);
+			this.checkScene = true;
+		}
+		else
+		{
+			Destroy(this.loadingScreen.gameObject);
+			this.errorMessage.SetText(reason);
+		}
 	}
 
 	/// <summary>

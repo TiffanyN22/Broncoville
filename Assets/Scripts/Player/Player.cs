@@ -3,13 +3,13 @@ using UnityEngine;
 
 public struct PlayerData : IComponentData
 {
-	// I'm so empty.
+	// You hear wind whistling through these braces.
 }
 
 [DisallowMultipleComponent]
 public class Player : MonoBehaviour
 {
-	// I am the void.
+	// I must consume.
 }
 
 class PlayerBaker : Baker<Player>

@@ -5,8 +5,8 @@ using UnityEngine;
 
 public struct PlayerInputData : IInputComponentData
 {
-	/// <summary>The player's movement direction.</summary>
-	public float2 movement;
+	/// <summary>The player's movement direction. This will automatically be synced across clients for animation purposes.</summary>
+	[GhostField] public float2 movement;
 }
 
 [DisallowMultipleComponent]

@@ -1,6 +1,8 @@
 using Unity.Collections;
 using Unity.Entities;
+using Unity.Mathematics;
 using Unity.NetCode;
+using Unity.Transforms;
 using UnityEngine;
 
 public struct LoginRequestRpc : IRpcCommand
@@ -30,7 +32,7 @@ public partial struct ServerLoginSystem : ISystem
 	public void OnCreate(ref SystemState state)
 	{
 		// Only run this system if log in requests are available.
-		EntityQueryBuilder builder = new EntityQueryBuilder(Allocator.Temp).WithAll<LoginRequestRpc>().WithAll<ReceiveRpcCommandRequest>();
+		EntityQueryBuilder builder = new EntityQueryBuilder(Allocator.Temp).WithAll<LoginRequestRpc, ReceiveRpcCommandRequest>();
 		state.RequireForUpdate(state.GetEntityQuery(builder));
 
 		// Get a redonly component lookup for network ids.
@@ -62,10 +64,12 @@ public partial struct ServerLoginSystem : ISystem
 				}
 			}
 
+			Account account = null;
+
 			// If the account is not in use, attempt to sign in.
 			if(success)
 			{
-				Account account = Account.LoadFromFile(username);
+				account = Account.LoadFromFile(username);
 				string password = login.ValueRO.password.ToString();
 
 				// If the account doesn't exist or the password is wrong, send the client a vague message.
@@ -97,18 +101,74 @@ public partial struct ServerLoginSystem : ISystem
 				// Send a message to the client telling to load the main hub sub scene.
 				Entity loadMainHub = commandBuffer.CreateEntity();
 
-				commandBuffer.AddComponent(loadMainHub, new LoadSceneRpc{subsceneHash = GameObject.FindFirstObjectByType<SubSceneManager>().GetMainHubGUID()});
+				commandBuffer.AddComponent(loadMainHub, new LoadSceneRpc{subsceneHash = Object.FindFirstObjectByType<SubSceneManager>().GetGUID(Location.MAIN_HUB)});
 				commandBuffer.AddComponent(loadMainHub, new SendRpcCommandRequest{TargetConnection = request.ValueRO.SourceConnection});
 
 				// Spawn the player in the world and set it's owner to the newly signed in client.
-				MainHubSpawnerData spawner = SystemAPI.GetSingleton<MainHubSpawnerData>();
-				Entity newPlayer = commandBuffer.Instantiate(spawner.player);
+				EntityManager serverEntities = Object.FindFirstObjectByType<ServerManager>().GetEntityManager();
+				Unity.Entities.Hash128 mainHubGuid = Object.FindFirstObjectByType<SubSceneManager>().GetGUID(Location.MAIN_HUB);
+				PlayerSpawner mainHubSpawner = new PlayerSpawner{player = Entity.Null};
+
+				foreach((RefRO<PlayerSpawner> spawner, Entity spawnerEntity) in SystemAPI.Query<RefRO<PlayerSpawner>>().WithEntityAccess())
+				{
+					if(serverEntities.GetSharedComponent<SceneSection>(spawnerEntity).SceneGUID == mainHubGuid)
+					{
+						mainHubSpawner = spawner.ValueRO;
+						break;
+					}
+				}
+
+				if(mainHubSpawner.player == Entity.Null)
+				{
+					Debug.Log("Failed to find the main hub player spawner.");
+					continue;
+				}
+
+				//PlayerSpawner spawner = SystemAPI.GetSingleton<PlayerSpawner>();
+				Entity newPlayer = commandBuffer.Instantiate(mainHubSpawner.player);
 				NetworkId playerId = this.clients[request.ValueRO.SourceConnection];
-				
+
+				commandBuffer.SetComponent(newPlayer, new AccountData{name = account.GetUsername(), bodyColor = account.GetBodyColor(), hairColor = account.GetHairColor(), hairStyle = account.GetHairStyle()});
 				commandBuffer.SetComponent(newPlayer, new GhostOwner{NetworkId = playerId.Value});
+				commandBuffer.SetComponent(newPlayer, new LocalTransform{Position = new float3{x = 0f, y = -1f, z = 0f}, Scale = 1f, Rotation = quaternion.identity});
 			}
 
 			// Destroy the message now that it has been processed.
+			commandBuffer.DestroyEntity(entity);
+		}
+
+		commandBuffer.Playback(state.EntityManager);
+		commandBuffer.Dispose();
+	}
+}
+
+[WorldSystemFilter(WorldSystemFilterFlags.ClientSimulation | WorldSystemFilterFlags.ThinClientSimulation)]
+public partial struct ClientLoginSystem : ISystem
+{
+	public void OnCreate(ref SystemState state)
+	{
+		EntityQueryBuilder builder = new EntityQueryBuilder(Allocator.Temp).WithAll<LoginResponseRpc, ReceiveRpcCommandRequest>();
+		state.RequireForUpdate(state.GetEntityQuery(builder));
+	}
+
+	public void OnUpdate(ref SystemState state)
+	{
+		EntityCommandBuffer commandBuffer = new EntityCommandBuffer(Allocator.Temp);
+
+		// Update the login UI upon recieving a response from the server.
+		foreach((RefRO<LoginResponseRpc> login, RefRO<ReceiveRpcCommandRequest> request, Entity entity) in SystemAPI.Query<RefRO<LoginResponseRpc>, RefRO<ReceiveRpcCommandRequest>>().WithEntityAccess())
+		{
+			LoginUIController loginUI = Object.FindFirstObjectByType<LoginUIController>();
+
+			if(loginUI == null)
+			{
+				Debug.Log("Client Login System: Failed to find the login UI.");
+			}
+			else
+			{
+				loginUI.Login(login.ValueRO.accepted, login.ValueRO.reason.ToString());
+			}
+			
 			commandBuffer.DestroyEntity(entity);
 		}
 

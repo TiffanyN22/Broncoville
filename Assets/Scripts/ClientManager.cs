@@ -1,15 +1,13 @@
 using Unity.Collections;
 using Unity.Entities;
+using Unity.Mathematics;
 using Unity.NetCode;
 using Unity.Networking.Transport;
+using Unity.Scenes;
 using UnityEngine;
 
 public class ClientManager : MonoBehaviour
 {
-	/// <summary>The main canvas for the menus.</summary>
-	[Tooltip("The main canvas for the menus.")]
-	[SerializeField] private Canvas canvas = null;
-
 	/// <summary>The main menu prefab.</summary>
 	[Tooltip("The main menu prefab.")]
 	[SerializeField] private MainMenuUIController mainMenuPrefab = null;
@@ -17,18 +15,21 @@ public class ClientManager : MonoBehaviour
 	/// <summary>The client's world.</summary>
 	private World world = null;
 
+	private Entity loadedSubScene = Entity.Null;
+
+	private Unity.Entities.Hash128 subSceneGuid = new Unity.Entities.Hash128{Value = uint4.zero};
+
 	public void Start()
 	{
 		// If the client isn't requested, self destruct.
 		if(ClientServerBootstrap.RequestedPlayType == ClientServerBootstrap.PlayType.Server)
 		{
-			Destroy(this.canvas.gameObject);
 			Destroy(this.gameObject);
 			return;
 		}
 
 		// Create the main menu.
-		Instantiate(this.mainMenuPrefab, this.canvas.transform);
+		Instantiate(this.mainMenuPrefab, this.GetComponentInChildren<Canvas>().transform);
 
 		// Create the client world.
 		this.world = ClientServerBootstrap.CreateClientWorld("ClientWorld");
@@ -128,6 +129,32 @@ public class ClientManager : MonoBehaviour
 		foreach(Entity entity in connections.ToEntityArray(Allocator.Temp))
 		{
 			this.world.EntityManager.AddComponent<NetworkStreamRequestDisconnect>(entity);
+		}
+	}
+
+	/// <summary>
+	/// Load a sub-scene. This will also unload the currently loaded sub-scene.
+	/// </summary>
+	/// <param name="subSceneGui">The sub-scene to load.</param>
+	public void LoadSubScene(Unity.Entities.Hash128 subSceneGui)
+	{
+		this.UnloadSubScene();
+		this.loadedSubScene = SceneSystem.LoadSceneAsync(this.world.Unmanaged, this.subSceneGuid = subSceneGui, new SceneSystem.LoadParameters{AutoLoad = false, Flags = SceneLoadFlags.BlockOnStreamIn});
+		
+		Camera camera = GetComponentInChildren<Camera>();
+		Vector2 offset = FindFirstObjectByType<SubSceneManager>().GetOffset(subSceneGui);
+		camera.transform.position = new Vector3(offset.x, offset.y, camera.transform.position.z);
+	}
+
+	/// <summary>
+	/// Unload the current sub-scene.
+	/// </summary>
+	public void UnloadSubScene()
+	{
+		if(this.loadedSubScene != Entity.Null)
+		{
+			SceneSystem.UnloadScene(this.world.Unmanaged, this.loadedSubScene, SceneSystem.UnloadParameters.DestroyMetaEntities);
+			this.loadedSubScene = Entity.Null;
 		}
 	}
 }

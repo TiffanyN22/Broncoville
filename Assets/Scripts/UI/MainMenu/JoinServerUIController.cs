@@ -59,8 +59,8 @@ public class JoinServerUIController : UIBase
 		// Wait until a successful connection is made before opening the login menu.
 		if(FindFirstObjectByType<ClientManager>().IsConnected())
 		{
-			Destroy(this.loadingScreen.gameObject);
 			Instantiate(this.loginPrefab, this.transform.parent).Open(this);
+			Destroy(this.loadingScreen.gameObject);
 		}
 	}
 
